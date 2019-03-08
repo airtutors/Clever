@@ -36,6 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'faraday_middleware'
 
   spec.add_development_dependency 'bundler', '~> 1.16'
+  spec.add_development_dependency 'mocha'
   spec.add_development_dependency 'pry'#, '~> 0.12.2'
   spec.add_development_dependency 'pry-nav'
   spec.add_development_dependency 'rake', '~> 10.0'

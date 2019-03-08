@@ -18,7 +18,10 @@ GEM
       faraday (>= 0.7.4, < 1.0)
     jaro_winkler (1.5.2)
     json (2.2.0)
+    metaclass (0.0.4)
     method_source (0.8.2)
+    mocha (1.8.0)
+      metaclass (~> 0.0.1)
     multipart-post (2.0.0)
     parallel (1.14.0)
     parser (2.6.0.0)
@@ -70,6 +73,7 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.16)
   clever!
+  mocha
   pry
   pry-nav
   rake (~> 10.0)

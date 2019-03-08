@@ -2,6 +2,9 @@
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
+require 'simplecov'
+SimpleCov.start
+
 require 'bundler/setup'
 require 'clever'
 
@@ -17,4 +20,5 @@ RSpec.configure do |config|
   end
 
   config.include Clever
+  config.mock_framework = :mocha
 end

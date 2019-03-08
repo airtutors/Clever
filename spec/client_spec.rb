@@ -21,4 +21,16 @@ RSpec.describe Clever::Client do
     expect(client.vendor_key).to eq(vendor_key)
     expect(client.vendor_secret).to eq(vendor_secret)
   end
+
+  it 'authenticates connection' do
+    client.connection.expects(:authenticate?).once
+
+    client.authenticate?
+  end
+
+  it 'has proper defaults' do
+    client = Clever::Client.new
+    expect(client.api_url).to eq(Clever::API_URL)
+    expect(client.tokens_endpoint).to eq(Clever::TOKENS_ENDPOINT)
+  end
 end

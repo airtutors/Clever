@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'pry'
 
 module Clever
   class Client
@@ -7,18 +8,14 @@ module Clever
     attr_reader :api_url, :tokens_endpoint
 
     def initialize
-      @api_url = 'https://api.clever.com/v2.0'
-      @tokens_endpoint = 'https://clever.com/oauth/tokens?owner_type=district'
+      @api_url         = API_URL
+      @tokens_endpoint = TOKENS_ENDPOINT
     end
 
     def self.configure
       client = new
       yield(client) if block_given?
       client
-    end
-
-    def authenticate
-      connection.authenticate
     end
 
     def authenticate?
