@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 require 'pry'
 
 module Clever
   class Client
-    attr_accessor :app_id, :sync_id, :logger, :vendor_key, :vendor_secret
+    attr_accessor :app_id, :app_token, :sync_id, :logger, :vendor_key, :vendor_secret
 
     attr_reader :api_url, :tokens_endpoint
 
@@ -18,8 +19,12 @@ module Clever
       client
     end
 
-    def authenticate?
-      connection.authenticate?
+    def authenticate(app_id = @app_id)
+      response = tokens
+
+      raise ConnectionError unless response.success?
+
+      set_token(response, app_id)
     end
 
     def connection
@@ -30,6 +35,25 @@ module Clever
       response = connection.execute(@tokens_endpoint)
       map_response!(response, Types::Token)
       response
+    end
+
+    def students
+      authenticate unless @app_token
+
+      response = connection.execute '/v2.0/students'
+      # map_response!()
+    end
+
+    private
+
+    def set_token(tokens, app_id)
+      district_token = tokens.body.find { |district| district.owner['id'] == app_id }
+
+      raise DistrictNotFound unless district_token
+
+      connection.set_token(district_token.access_token)
+
+      @app_token = district_token.access_token
     end
 
     def map_response!(response, type)

@@ -9,23 +9,20 @@ module Clever
       @client = client
     end
 
-    def authenticate
-      execute @client.tokens_endpoint
-    end
-
-    def authenticate?
-      response = authenticate
-      response.status != 401
-    end
-
     def execute(path, method = :get, params = nil, body = nil)
       Response.new(raw_request(path, method, params, body))
+    end
+
+    def set_token(token)
+      connection.authorization :Bearer, token
     end
 
     private
 
     def connection
-      @connection ||= Faraday.new(@client.api_url) do |connection|
+      return @connection if @connection
+
+      @connection = Faraday.new(@client.api_url) do |connection|
         connection.request :json
         connection.response :logger, @client.logger if @client.logger
         connection.response :json, content_type: /\bjson$/
@@ -36,6 +33,7 @@ module Clever
     end
 
     def raw_request(path, method, params, body)
+      p "request #{path}"
       connection.public_send(method) do |request|
         request.options.open_timeout        = OPEN_TIMEOUT
         request.options.timeout             = TIMEOUT

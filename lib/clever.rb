@@ -13,4 +13,7 @@ require 'clever/types/token'
 module Clever
   API_URL         = 'https://api.clever.com/v2.0'
   TOKENS_ENDPOINT = 'https://clever.com/oauth/tokens?owner_type=district'
+
+  class DistrictNotFound < StandardError; end
+  class ConnectionError < StandardError; end
 end
