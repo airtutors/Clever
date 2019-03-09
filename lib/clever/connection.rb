@@ -33,7 +33,7 @@ module Clever
     end
 
     def raw_request(path, method, params, body)
-      p "request #{path}"
+      p "request #{path} #{params}"
       connection.public_send(method) do |request|
         request.options.open_timeout        = OPEN_TIMEOUT
         request.options.timeout             = TIMEOUT

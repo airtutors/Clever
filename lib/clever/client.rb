@@ -39,8 +39,13 @@ module Clever
 
     def students
       authenticate unless @app_token
-
-      response = connection.execute '/v2.0/students'
+      Paginator.fetch(
+        connection,
+        '/v2.0/students',
+        :get,
+        Types::Student
+      )
+      # response = connection.execute '/v2.0/students'
       # map_response!()
     end
 
@@ -57,7 +62,7 @@ module Clever
     end
 
     def map_response!(response, type)
-      response.body = map_response(type, response.body['data']) if response.success?
+      response.body = map_response(type, response.body) if response.success?
     end
 
     def map_response(type, data)
