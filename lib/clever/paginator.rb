@@ -20,7 +20,7 @@ module Clever
 
           raise "Failed to fetch #{@path}" unless response.success?
 
-          body.each { |item| yielder << (@type.new(item)) } if body.any?
+          body.each { |item| yielder << @type.new(item) } if body.any?
 
           @next_path = response.next_uri
 

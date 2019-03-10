@@ -38,12 +38,13 @@ module Clever
     def students
       authenticate unless @app_token
 
-      Paginator.fetch(
-        connection,
-        STUDENTS_ENDPOINT,
-        :get,
-        Types::Student
-      )
+      Paginator.fetch(connection, STUDENTS_ENDPOINT, :get, Types::Student)
+    end
+
+    def courses
+      authenticate unless @app_token
+
+      Paginator.fetch(connection, COURSES_ENDPOINT, :get, Types::Course)
     end
 
     private

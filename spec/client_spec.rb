@@ -104,63 +104,120 @@ RSpec.describe Clever::Client do
     end
   end
 
-  describe 'students' do
-    let(:student_1) do
-      {
-        'data' => {
-          'id' => '17b6cc35f',
-          'name' => { 'first' => 'jane', 'last' => 'doe' },
-          'credentials' => { 'district_username' => 'jdoez' },
-          'grade' => '1'
-        }
-      }
-    end
-
-    let(:student_2) do
-      {
-        'data' => {
-          'id' => '5b1f7442',
-          'name' => { 'first' => 'johnny', 'last' => 'appleseed' },
-          'credentials' => { 'district_username' => 'applej0n' },
-          'grade' => '6'
-        }
-      }
-    end
-    let(:students_body) { { 'data' => [student_1, student_2] } }
-    let(:students_response) { Clever::Response.new(stub(body: students_body, status: status)) }
+  describe 'district data requests' do
     let(:tokens_response) { Clever::Response.new(stub(body: tokens_body, status: status)) }
-
     before do
       client.connection.expects(:execute).with(Clever::TOKENS_ENDPOINT).returns(tokens_response)
-      client.connection.expects(:execute)
-        .with('/v2.0/students', :get, limit: Clever::PAGE_LIMIT)
-        .returns(students_response)
+      client.connection.expects(:set_token).with(app_token)
     end
 
-    context 'not yet authenticated' do
-      it 'authenticates and returns students' do
-        client.connection.expects(:set_token).with(app_token)
-        response = client.students.force
+    describe 'students' do
+      let(:student_1) do
+        {
+          'data' => {
+            'id' => '17b6cc35f',
+            'name' => { 'first' => 'jane', 'last' => 'doe' },
+            'credentials' => { 'district_username' => 'jdoez' },
+            'grade' => '1'
+          }
+        }
+      end
+      let(:student_2) do
+        {
+          'data' => {
+            'id' => '5b1f7442',
+            'name' => { 'first' => 'johnny', 'last' => 'appleseed' },
+            'credentials' => { 'district_username' => 'applej0n' },
+            'grade' => '6'
+          }
+        }
+      end
+      let(:students_body) { { 'data' => [student_1, student_2] } }
+      let(:students_response) { Clever::Response.new(stub(body: students_body, status: status)) }
 
-        first_student  = response[0]
-        second_student = response[1]
+      before do
+        client.connection.expects(:execute)
+          .with(Clever::STUDENTS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
+          .returns(students_response)
+      end
 
-        expect(first_student.class).to eq(Clever::Types::Student)
-        expect(first_student.id).to eq(student_1['data']['id'])
-        expect(first_student.first_name).to eq(student_1['data']['name']['first'])
-        expect(first_student.last_name).to eq(student_1['data']['name']['last'])
-        expect(first_student.district_username).to eq(student_1['data']['credentials']['district_username'])
-        expect(first_student.grade).to eq(student_1['data']['grade'])
-        expect(first_student.provider).to eq('clever')
+      context 'not yet authenticated' do
+        it 'authenticates and returns students' do
+          response = client.students.force
+          expect(client.app_token).to eq(app_token)
 
-        expect(second_student.class).to eq(Clever::Types::Student)
-        expect(second_student.id).to eq(student_2['data']['id'])
-        expect(second_student.first_name).to eq(student_2['data']['name']['first'])
-        expect(second_student.last_name).to eq(student_2['data']['name']['last'])
-        expect(second_student.district_username).to eq(student_2['data']['credentials']['district_username'])
-        expect(second_student.grade).to eq(student_2['data']['grade'])
-        expect(second_student.provider).to eq('clever')
-        expect(client.app_token).to eq(app_token)
+          first_student  = response[0]
+          second_student = response[1]
+
+          expect(first_student.class).to eq(Clever::Types::Student)
+          expect(first_student.id).to eq(student_1['data']['id'])
+          expect(first_student.first_name).to eq(student_1['data']['name']['first'])
+          expect(first_student.last_name).to eq(student_1['data']['name']['last'])
+          expect(first_student.district_username).to eq(student_1['data']['credentials']['district_username'])
+          expect(first_student.grade).to eq(student_1['data']['grade'])
+          expect(first_student.provider).to eq('clever')
+
+          expect(second_student.class).to eq(Clever::Types::Student)
+          expect(second_student.id).to eq(student_2['data']['id'])
+          expect(second_student.first_name).to eq(student_2['data']['name']['first'])
+          expect(second_student.last_name).to eq(student_2['data']['name']['last'])
+          expect(second_student.district_username).to eq(student_2['data']['credentials']['district_username'])
+          expect(second_student.grade).to eq(student_2['data']['grade'])
+          expect(second_student.provider).to eq('clever')
+        end
+      end
+    end
+
+    describe 'courses' do
+      let(:course_1) do
+        {
+          'data' => {
+            'id' => '1',
+            'district' => '12345',
+            'name' => 'The Best Course',
+            'number' => '555'
+          }
+        }
+      end
+      let(:course_2) do
+        {
+          'data' => {
+            'id' => '100',
+            'district' => '12345',
+            'name' => 'The Worst Course',
+            'number' => '000'
+          }
+        }
+      end
+      let(:courses_body) { { 'data' => [course_1, course_2] } }
+      let(:courses_response) { Clever::Response.new(stub(body: courses_body, status: status)) }
+
+      before do
+        client.connection.expects(:execute)
+          .with(Clever::COURSES_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
+          .returns(courses_response)
+      end
+
+      context 'not yet authenticate' do
+        it 'authenticates and returns courses' do
+          response = client.courses.force
+          expect(client.app_token).to eq(app_token)
+
+          first_course  = response[0]
+          second_course = response[1]
+
+          expect(first_course.class).to eq(Clever::Types::Course)
+          expect(first_course.id).to eq(course_1['data']['id'])
+          expect(first_course.district).to eq(course_1['data']['district'])
+          expect(first_course.name).to eq(course_1['data']['name'])
+          expect(first_course.number).to eq(course_1['data']['number'])
+
+          expect(second_course.class).to eq(Clever::Types::Course)
+          expect(second_course.id).to eq(course_2['data']['id'])
+          expect(second_course.district).to eq(course_2['data']['district'])
+          expect(second_course.name).to eq(course_2['data']['name'])
+          expect(second_course.number).to eq(course_2['data']['number'])
+        end
       end
     end
   end
