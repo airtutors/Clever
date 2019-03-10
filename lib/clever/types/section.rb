@@ -2,10 +2,11 @@
 
 module Clever
   module Types
-    class Section
+    class Section < Base
       attr_reader :id,
                   :name,
                   :period,
+                  :course,
                   :grades,
                   :provider
 
@@ -14,6 +15,7 @@ module Clever
         @id       = data['id']
         @name     = data['name']
         @period   = data['period']
+        @course   = data['course']
         @grades   = data['grade']
         @provider = 'clever'
       end

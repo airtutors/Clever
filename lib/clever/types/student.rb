@@ -2,7 +2,7 @@
 
 module Clever
   module Types
-    class Student
+    class Student < Base
       attr_reader :id,
                   :first_name,
                   :last_name,

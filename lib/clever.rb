@@ -9,6 +9,7 @@ require 'clever/paginator'
 require 'clever/response'
 require 'clever/version'
 
+require 'clever/types/base'
 require 'clever/types/course'
 require 'clever/types/student'
 require 'clever/types/section'
@@ -22,7 +23,6 @@ module Clever
   COURSES_ENDPOINT  = '/v2.0/courses'
   SECTIONS_ENDPOINT = '/v2.0/sections'
   TEACHERS_ENDPOINT = '/v2.0/teachers'
-
 
   class DistrictNotFound < StandardError; end
   class ConnectionError < StandardError; end

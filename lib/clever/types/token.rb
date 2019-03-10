@@ -2,7 +2,7 @@
 
 module Clever
   module Types
-    class Token
+    class Token < Base
       attr_reader :id,
                   :created,
                   :owner,
