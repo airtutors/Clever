@@ -3,16 +3,28 @@
 require 'spec_helper'
 
 RSpec.describe Clever::Client do
-  let(:app_id) { 'app' }
   let(:vendor_key) { 'vendor_key' }
   let(:vendor_secret) { 'vendor_secret' }
-
   let(:client) do
     Clever::Client.configure do |config|
       config.app_id        = app_id
       config.vendor_key    = vendor_key
       config.vendor_secret = vendor_secret
     end
+  end
+  let(:app_token) { '0ed35a0de3005aa1c77df310ac0375a6158881c4' }
+  let(:app_id) { '5800e1c5e16c4230146fce0' }
+  let(:status) { 200 }
+  let(:tokens_body) do
+    {
+      'data' => [{
+        'id' => '58939ac0a206f40316fe8a1c',
+        'created' => '2017-02-02T20:46:56.435Z',
+        'owner' => { 'type' => 'district', 'id' => app_id },
+        'access_token' => app_token,
+        'scopes' => ['read:district_admins']
+      }]
+    }
   end
 
   it 'is configurable' do
@@ -29,12 +41,19 @@ RSpec.describe Clever::Client do
   end
 
   describe 'authentication' do
-    let(:raw_body) { nil }
-    let(:status) { 200 }
-    let(:mock_response) { Clever::Response.new(stub(body: raw_body, status: status)) }
+    let(:mock_response) { Clever::Response.new(stub(body: tokens_body, status: status)) }
     before { client.connection.expects(:execute).with(Clever::TOKENS_ENDPOINT).returns(mock_response) }
 
+    context 'successful authentication' do
+      it 'sets app_token' do
+        client.connection.expects(:set_token).with(app_token)
+        client.authenticate
+        expect(client.app_token).to eq(app_token)
+      end
+    end
+
     context 'connection error' do
+      let(:tokens_body) { nil }
       let(:status) { 401 }
       it 'raises error' do
         expect { client.authenticate }.to raise_error(Clever::ConnectionError)
@@ -42,30 +61,9 @@ RSpec.describe Clever::Client do
     end
 
     context 'district not found' do
-      let(:raw_body) { { 'data' => [] } }
+      let(:tokens_body) { { 'data' => [] } }
       it 'raises error' do
-        expect { client.authenticate }.to raise_error { Clever::DistrictNotFound }
-      end
-    end
-
-    context 'successful authentication' do
-      let(:app_token) { '0ed35a0de3005aa1c77df310ac0375a6158881c4' }
-      let(:app_id) { '5800e1c5e16c4230146fce0' }
-      let(:raw_body) do
-        {
-          'data' => [{
-            'id' => '58939ac0a206f40316fe8a1c',
-            'created' => '2017-02-02T20:46:56.435Z',
-            'owner' => { 'type' => 'district', 'id' => app_id },
-            'access_token' => app_token,
-            'scopes' => ['read:district_admins']
-          }]
-        }
-      end
-      it 'sets app_token' do
-        client.connection.expects(:set_token).with(app_token)
-        client.authenticate
-        expect(client.app_token).to eq(app_token)
+        expect { client.authenticate }.to raise_error(Clever::DistrictNotFound)
       end
     end
   end
@@ -102,6 +100,67 @@ RSpec.describe Clever::Client do
         expect(response.status).to eq(200)
         expect(response.raw_body).to eq(raw_body)
         expect(response.body.size).to eq(raw_body['data'].length)
+      end
+    end
+  end
+
+  describe 'students' do
+    let(:student_1) do
+      {
+        'data' => {
+          'id' => '17b6cc35f',
+          'name' => { 'first' => 'jane', 'last' => 'doe' },
+          'credentials' => { 'district_username' => 'jdoez' },
+          'grade' => '1'
+        }
+      }
+    end
+
+    let(:student_2) do
+      {
+        'data' => {
+          'id' => '5b1f7442',
+          'name' => { 'first' => 'johnny', 'last' => 'appleseed' },
+          'credentials' => { 'district_username' => 'applej0n' },
+          'grade' => '6'
+        }
+      }
+    end
+    let(:students_body) { { 'data' => [student_1, student_2] } }
+    let(:students_response) { Clever::Response.new(stub(body: students_body, status: status)) }
+    let(:tokens_response) { Clever::Response.new(stub(body: tokens_body, status: status)) }
+
+    before do
+      client.connection.expects(:execute).with(Clever::TOKENS_ENDPOINT).returns(tokens_response)
+      client.connection.expects(:execute)
+        .with('/v2.0/students', :get, limit: Clever::PAGE_LIMIT)
+        .returns(students_response)
+    end
+
+    context 'not yet authenticated' do
+      it 'authenticates and returns students' do
+        client.connection.expects(:set_token).with(app_token)
+        response = client.students.force
+
+        first_student  = response[0]
+        second_student = response[1]
+
+        expect(first_student.class).to eq(Clever::Types::Student)
+        expect(first_student.id).to eq(student_1['data']['id'])
+        expect(first_student.first_name).to eq(student_1['data']['name']['first'])
+        expect(first_student.last_name).to eq(student_1['data']['name']['last'])
+        expect(first_student.district_username).to eq(student_1['data']['credentials']['district_username'])
+        expect(first_student.grade).to eq(student_1['data']['grade'])
+        expect(first_student.provider).to eq('clever')
+
+        expect(second_student.class).to eq(Clever::Types::Student)
+        expect(second_student.id).to eq(student_2['data']['id'])
+        expect(second_student.first_name).to eq(student_2['data']['name']['first'])
+        expect(second_student.last_name).to eq(student_2['data']['name']['last'])
+        expect(second_student.district_username).to eq(student_2['data']['credentials']['district_username'])
+        expect(second_student.grade).to eq(student_2['data']['grade'])
+        expect(second_student.provider).to eq('clever')
+        expect(client.app_token).to eq(app_token)
       end
     end
   end

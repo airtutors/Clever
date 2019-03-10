@@ -7,6 +7,7 @@ SimpleCov.start
 
 require 'bundler/setup'
 require 'clever'
+require 'pry'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

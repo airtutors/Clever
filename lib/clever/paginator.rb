@@ -2,6 +2,7 @@
 
 module Clever
   PAGE_LIMIT = 10_000
+
   class Paginator
     def initialize(connection, path, method, type)
       @connection = connection
