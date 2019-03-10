@@ -46,6 +46,16 @@ module Clever
       end
     end
 
+    def classrooms
+      authenticate unless @app_token
+
+      fetched_courses = courses.force
+      sections.force.map do |section|
+        course = fetched_courses.find { |clever_course| clever_course.id == section.course }
+        Types::Classroom.new(section, course&.number)
+      end
+    end
+
     private
 
     def set_token(tokens, app_id)

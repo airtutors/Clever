@@ -10,6 +10,7 @@ require 'clever/response'
 require 'clever/version'
 
 require 'clever/types/base'
+require 'clever/types/classroom'
 require 'clever/types/course'
 require 'clever/types/student'
 require 'clever/types/section'

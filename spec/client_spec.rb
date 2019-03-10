@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Clever::Client do
+  include_context 'api responses'
   let(:vendor_key) { 'vendor_key' }
   let(:vendor_secret) { 'vendor_secret' }
   let(:client) do
@@ -15,17 +16,6 @@ RSpec.describe Clever::Client do
   let(:app_token) { '0ed35a0de3005aa1c77df310ac0375a6158881c4' }
   let(:app_id) { '5800e1c5e16c4230146fce0' }
   let(:status) { 200 }
-  let(:tokens_body) do
-    {
-      'data' => [{
-        'id' => '58939ac0a206f40316fe8a1c',
-        'created' => '2017-02-02T20:46:56.435Z',
-        'owner' => { 'type' => 'district', 'id' => app_id },
-        'access_token' => app_token,
-        'scopes' => ['read:district_admins']
-      }]
-    }
-  end
 
   it 'is configurable' do
     expect(client).to be_a(Clever::Client)
@@ -105,36 +95,12 @@ RSpec.describe Clever::Client do
   end
 
   describe 'district data requests' do
-    let(:tokens_response) { Clever::Response.new(stub(body: tokens_body, status: status)) }
     before do
       client.connection.expects(:execute).with(Clever::TOKENS_ENDPOINT).returns(tokens_response)
       client.connection.expects(:set_token).with(app_token)
     end
 
     describe 'students' do
-      let(:student_1) do
-        {
-          'data' => {
-            'id' => '17b6cc35f',
-            'name' => { 'first' => 'jane', 'last' => 'doe' },
-            'credentials' => { 'district_username' => 'jdoez' },
-            'grade' => '1'
-          }
-        }
-      end
-      let(:student_2) do
-        {
-          'data' => {
-            'id' => '5b1f7442',
-            'name' => { 'first' => 'johnny', 'last' => 'appleseed' },
-            'credentials' => { 'district_username' => 'applej0n' },
-            'grade' => '6'
-          }
-        }
-      end
-      let(:students_body) { { 'data' => [student_1, student_2] } }
-      let(:students_response) { Clever::Response.new(stub(body: students_body, status: status)) }
-
       before do
         client.connection.expects(:execute)
           .with(Clever::STUDENTS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
@@ -167,29 +133,6 @@ RSpec.describe Clever::Client do
     end
 
     describe 'courses' do
-      let(:course_1) do
-        {
-          'data' => {
-            'id' => '1',
-            'district' => '12345',
-            'name' => 'The Best Course',
-            'number' => '555'
-          }
-        }
-      end
-      let(:course_2) do
-        {
-          'data' => {
-            'id' => '100',
-            'district' => '12345',
-            'name' => 'The Worst Course',
-            'number' => '000'
-          }
-        }
-      end
-      let(:courses_body) { { 'data' => [course_1, course_2] } }
-      let(:courses_response) { Clever::Response.new(stub(body: courses_body, status: status)) }
-
       before do
         client.connection.expects(:execute)
           .with(Clever::COURSES_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
@@ -218,27 +161,6 @@ RSpec.describe Clever::Client do
     end
 
     describe 'teachers' do
-      let(:teacher_1) do
-        {
-          'data' => {
-            'id' => '1',
-            'email' => '12345',
-            'name' => { 'first' => 'jill', 'last' => 'epstein' }
-          }
-        }
-      end
-      let(:teacher_2) do
-        {
-          'data' => {
-            'id' => '1',
-            'email' => '12345',
-            'name' => { 'first' => 'darren', 'last' => 'piper' }
-          }
-        }
-      end
-      let(:teachers_body) { { 'data' => [teacher_1, teacher_2] } }
-      let(:teachers_response) { Clever::Response.new(stub(body: teachers_body, status: status)) }
-
       before do
         client.connection.expects(:execute)
           .with(Clever::TEACHERS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
@@ -269,29 +191,6 @@ RSpec.describe Clever::Client do
     end
 
     describe 'sections' do
-      let(:section_1) do
-        {
-          'data' => {
-            'id' => '5',
-            'name' => 'Social Studies Grade Five',
-            'period' => '01',
-            'grade' => '5'
-          }
-        }
-      end
-      let(:section_2) do
-        {
-          'data' => {
-            'id' => '20',
-            'name' => 'Science Grade 1',
-            'period' => '06',
-            'grade' => '1'
-          }
-        }
-      end
-      let(:sections_body) { { 'data' => [section_1, section_2] } }
-      let(:sections_response) { Clever::Response.new(stub(body: sections_body, status: status)) }
-
       before do
         client.connection.expects(:execute)
           .with(Clever::SECTIONS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
@@ -310,6 +209,7 @@ RSpec.describe Clever::Client do
         expect(first_section.name).to eq(section_1['data']['name'])
         expect(first_section.grades).to eq(section_1['data']['grade'])
         expect(first_section.period).to eq(section_1['data']['period'])
+        expect(first_section.course).to eq(section_1['data']['course'])
         expect(first_section.provider).to eq('clever')
 
         expect(second_section.class).to eq(Clever::Types::Section)
@@ -317,7 +217,43 @@ RSpec.describe Clever::Client do
         expect(second_section.name).to eq(section_2['data']['name'])
         expect(second_section.grades).to eq(section_2['data']['grade'])
         expect(second_section.period).to eq(section_2['data']['period'])
+        expect(second_section.course).to eq(section_2['data']['course'])
         expect(second_section.provider).to eq('clever')
+      end
+    end
+
+    describe 'classrooms' do
+      before do
+        client.connection.expects(:execute)
+          .with(Clever::COURSES_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
+          .returns(courses_response)
+        client.connection.expects(:execute)
+          .with(Clever::SECTIONS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
+          .returns(sections_response)
+      end
+
+      it 'authenticates and returns classrooms with properly mapped course numbers' do
+        response = client.classrooms
+        expect(client.app_token).to eq(app_token)
+
+        first_classroom = response[0]
+        second_classroom = response[1]
+
+        expect(first_classroom.class).to eq(Clever::Types::Classroom)
+        expect(first_classroom.id).to eq(section_1['data']['id'])
+        expect(first_classroom.name).to eq(section_1['data']['name'])
+        expect(first_classroom.period).to eq(section_1['data']['period'])
+        expect(first_classroom.course_number).to eq(course_1['data']['number'])
+        expect(first_classroom.grades).to eq(section_1['data']['grade'])
+        expect(first_classroom.provider).to eq('clever')
+
+        expect(second_classroom.class).to eq(Clever::Types::Classroom)
+        expect(second_classroom.id).to eq(section_2['data']['id'])
+        expect(second_classroom.name).to eq(section_2['data']['name'])
+        expect(second_classroom.period).to eq(section_2['data']['period'])
+        expect(second_classroom.course_number).to eq(nil)
+        expect(second_classroom.grades).to eq(section_2['data']['grade'])
+        expect(second_classroom.provider).to eq('clever')
       end
     end
   end
