@@ -35,8 +35,7 @@ module Clever
       response
     end
 
-    # authenticated paginated data fetches
-    %i[students courses teachers].each do |record_type|
+    %i[students courses teachers sections].each do |record_type|
       define_method(record_type) do
         authenticate unless @app_token
 
