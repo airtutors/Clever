@@ -198,7 +198,7 @@ RSpec.describe Clever::Client do
           .returns(courses_response)
       end
 
-      context 'not yet authenticate' do
+      context 'not yet authenticated' do
         it 'authenticates and returns courses' do
           response = client.courses.force
           expect(client.app_token).to eq(app_token)
@@ -217,6 +217,59 @@ RSpec.describe Clever::Client do
           expect(second_course.district).to eq(course_2['data']['district'])
           expect(second_course.name).to eq(course_2['data']['name'])
           expect(second_course.number).to eq(course_2['data']['number'])
+        end
+      end
+    end
+
+    describe 'teachers' do
+      let(:teacher_1) do
+        {
+          'data' => {
+            'id' => '1',
+            'email' => '12345',
+            'name' => { 'first' => 'jill', 'last' => 'epstein' }
+          }
+        }
+      end
+      let(:teacher_2) do
+        {
+          'data' => {
+            'id' => '1',
+            'email' => '12345',
+            'name' => { 'first' => 'darren', 'last' => 'piper' }
+          }
+        }
+      end
+      let(:teachers_body) { { 'data' => [teacher_1, teacher_2] } }
+      let(:teachers_response) { Clever::Response.new(stub(body: teachers_body, status: status)) }
+
+      before do
+        client.connection.expects(:execute)
+          .with(Clever::TEACHERS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
+          .returns(teachers_response)
+      end
+
+      context 'not yet authenticated' do
+        it 'authenticates and returns teachers' do
+          response = client.teachers.force
+          expect(client.app_token).to eq(app_token)
+
+          first_teacher  = response[0]
+          second_teacher = response[1]
+
+          expect(first_teacher.class).to eq(Clever::Types::Teacher)
+          expect(first_teacher.id).to eq(teacher_1['data']['id'])
+          expect(first_teacher.email).to eq(teacher_1['data']['email'])
+          expect(first_teacher.first_name).to eq(teacher_1['data']['name']['first'])
+          expect(first_teacher.last_name).to eq(teacher_1['data']['name']['last'])
+          expect(first_teacher.provider).to eq('clever')
+
+          expect(second_teacher.class).to eq(Clever::Types::Teacher)
+          expect(second_teacher.id).to eq(teacher_2['data']['id'])
+          expect(second_teacher.email).to eq(teacher_2['data']['email'])
+          expect(second_teacher.first_name).to eq(teacher_2['data']['name']['first'])
+          expect(second_teacher.last_name).to eq(teacher_2['data']['name']['last'])
+          expect(second_teacher.provider).to eq('clever')
         end
       end
     end

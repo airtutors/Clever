@@ -47,6 +47,12 @@ module Clever
       Paginator.fetch(connection, COURSES_ENDPOINT, :get, Types::Course)
     end
 
+    def teachers
+      authenticate unless @app_token
+
+      Paginator.fetch(connection, TEACHERS_ENDPOINT, :get, Types::Teacher)
+    end
+
     private
 
     def set_token(tokens, app_id)

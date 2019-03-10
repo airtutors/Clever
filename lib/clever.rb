@@ -11,6 +11,7 @@ require 'clever/version'
 
 require 'clever/types/course'
 require 'clever/types/student'
+require 'clever/types/teacher'
 require 'clever/types/token'
 
 module Clever
