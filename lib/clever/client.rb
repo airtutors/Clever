@@ -35,22 +35,16 @@ module Clever
       response
     end
 
-    def students
-      authenticate unless @app_token
+    # authenticated paginated data fetches
+    %i[students courses teachers].each do |record_type|
+      define_method(record_type) do
+        authenticate unless @app_token
 
-      Paginator.fetch(connection, STUDENTS_ENDPOINT, :get, Types::Student)
-    end
+        endpoint = Clever.const_get("#{record_type.upcase}_ENDPOINT")
+        type = Types.const_get(record_type.to_s.capitalize[0..-2])
 
-    def courses
-      authenticate unless @app_token
-
-      Paginator.fetch(connection, COURSES_ENDPOINT, :get, Types::Course)
-    end
-
-    def teachers
-      authenticate unless @app_token
-
-      Paginator.fetch(connection, TEACHERS_ENDPOINT, :get, Types::Teacher)
+        Paginator.fetch(connection, endpoint, :get, type)
+      end
     end
 
     private
