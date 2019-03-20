@@ -7,6 +7,7 @@ module Clever
                   :first_name,
                   :last_name,
                   :district_username,
+                  :sis_id,
                   :grade,
                   :provider
 
@@ -16,6 +17,7 @@ module Clever
         @first_name        = data['name']['first']
         @last_name         = data['name']['last']
         @district_username = data['credentials']['district_username']
+        @sis_id            = data['sis_id']
         @grade             = data['grade']
         @provider          = 'clever'
       end

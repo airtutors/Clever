@@ -22,7 +22,8 @@ RSpec.shared_context 'api responses' do
         'id' => '17b6cc35f',
         'name' => { 'first' => 'jane', 'last' => 'doe' },
         'credentials' => { 'district_username' => 'jdoez' },
-        'grade' => '1'
+        'grade' => '1',
+        'sis_id' => '121314'
       }
     }
   end
@@ -32,7 +33,8 @@ RSpec.shared_context 'api responses' do
         'id' => '5b1f7442',
         'name' => { 'first' => 'johnny', 'last' => 'appleseed' },
         'credentials' => { 'district_username' => 'applej0n' },
-        'grade' => '6'
+        'grade' => '6',
+        'sis_id' => '213154'
       }
     }
   end
