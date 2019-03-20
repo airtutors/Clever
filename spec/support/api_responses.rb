@@ -21,7 +21,7 @@ RSpec.shared_context 'api responses' do
       'data' => {
         'id' => '17b6cc35f',
         'name' => { 'first' => 'jane', 'last' => 'doe' },
-        'credentials' => { 'district_username' => 'jdoez' },
+        'credentials' => { 'district_username' => '' },
         'grade' => '1',
         'sis_id' => '121314'
       }

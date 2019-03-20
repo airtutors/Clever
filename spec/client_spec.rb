@@ -118,18 +118,14 @@ RSpec.describe Clever::Client do
         expect(first_student.id).to eq(student_1['data']['id'])
         expect(first_student.first_name).to eq(student_1['data']['name']['first'])
         expect(first_student.last_name).to eq(student_1['data']['name']['last'])
-        expect(first_student.district_username).to eq(student_1['data']['credentials']['district_username'])
-        expect(first_student.sis_id).to eq(student_1['data']['sis_id'])
-        expect(first_student.grade).to eq(student_1['data']['grade'])
+        expect(first_student.username).to eq(student_1['data']['credentials']['district_username'])
         expect(first_student.provider).to eq('clever')
 
         expect(second_student.class).to eq(Clever::Types::Student)
         expect(second_student.id).to eq(student_2['data']['id'])
         expect(second_student.first_name).to eq(student_2['data']['name']['first'])
         expect(second_student.last_name).to eq(student_2['data']['name']['last'])
-        expect(second_student.district_username).to eq(student_2['data']['credentials']['district_username'])
-        expect(second_student.sis_id).to eq(student_2['data']['sis_id'])
-        expect(second_student.grade).to eq(student_2['data']['grade'])
+        expect(second_student.username).to eq(student_2['data']['sis_id'])
         expect(second_student.provider).to eq('clever')
       end
     end
