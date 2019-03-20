@@ -8,6 +8,8 @@ module Clever
                   :period,
                   :course,
                   :grades,
+                  :students,
+                  :teachers,
                   :provider
 
       def initialize(attributes = {})
@@ -17,6 +19,8 @@ module Clever
         @period   = data['period']
         @course   = data['course']
         @grades   = data['grade']
+        @students = data['students']
+        @teachers = data['teachers']
         @provider = 'clever'
       end
     end

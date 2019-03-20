@@ -36,24 +36,47 @@ module Clever
     end
 
     %i[students courses teachers sections].each do |record_type|
-      define_method(record_type) do
+      define_method(record_type) do |record_ids = []|
         authenticate unless @app_token
 
         endpoint = Clever.const_get("#{record_type.upcase}_ENDPOINT")
         type = Types.const_get(record_type.to_s.capitalize[0..-2])
 
-        Paginator.fetch(connection, endpoint, :get, type)
+        records = Paginator.fetch(connection, endpoint, :get, type).force
+
+        return records if record_ids.empty?
+
+        records.reject { |record| record_ids.exclude?(record.id) }
       end
     end
 
     def classrooms
       authenticate unless @app_token
 
-      fetched_courses = courses.force
-      sections.force.map do |section|
+      fetched_courses = courses
+
+      sections.map do |section|
         course = fetched_courses.find { |clever_course| clever_course.id == section.course }
         Types::Classroom.new(section, course&.number)
       end
+    end
+
+    def enrollments(classroom_ids = [])
+      authenticate unless @app_token
+
+      fetched_sections = sections
+
+      enrollments = fetched_sections.each_with_object(student: [], teacher: []) do |section, enrollments|
+        next if classroom_ids.any? && classroom_ids.exclude?(section.id)
+
+        %i[student teacher].each do |kind|
+          section.public_send("#{kind}s").each { |record| enrollments[kind] << Types::Enrollment.new(section, record) }
+        end
+      end
+
+      p "Found #{enrollments.values.flatten.length} enrollments."
+
+      enrollments
     end
 
     private

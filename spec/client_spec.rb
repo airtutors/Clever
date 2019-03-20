@@ -108,7 +108,7 @@ RSpec.describe Clever::Client do
       end
 
       it 'authenticates and returns students' do
-        response = client.students.force
+        response = client.students
         expect(client.app_token).to eq(app_token)
 
         first_student  = response[0]
@@ -140,7 +140,7 @@ RSpec.describe Clever::Client do
       end
 
       it 'authenticates and returns courses' do
-        response = client.courses.force
+        response = client.courses
         expect(client.app_token).to eq(app_token)
 
         first_course  = response[0]
@@ -168,7 +168,7 @@ RSpec.describe Clever::Client do
       end
 
       it 'authenticates and returns teachers' do
-        response = client.teachers.force
+        response = client.teachers
         expect(client.app_token).to eq(app_token)
 
         first_teacher  = response[0]
@@ -198,7 +198,7 @@ RSpec.describe Clever::Client do
       end
 
       it 'authenticates and returns teachers' do
-        response = client.sections.force
+        response = client.sections
         expect(client.app_token).to eq(app_token)
 
         first_section  = response[0]
@@ -210,6 +210,8 @@ RSpec.describe Clever::Client do
         expect(first_section.grades).to eq(section_1['data']['grade'])
         expect(first_section.period).to eq(section_1['data']['period'])
         expect(first_section.course).to eq(section_1['data']['course'])
+        expect(first_section.teachers).to eq(section_1['data']['teachers'])
+        expect(first_section.students).to eq(section_1['data']['students'])
         expect(first_section.provider).to eq('clever')
 
         expect(second_section.class).to eq(Clever::Types::Section)
@@ -218,6 +220,8 @@ RSpec.describe Clever::Client do
         expect(second_section.grades).to eq(section_2['data']['grade'])
         expect(second_section.period).to eq(section_2['data']['period'])
         expect(second_section.course).to eq(section_2['data']['course'])
+        expect(second_section.teachers).to eq(section_2['data']['teachers'])
+        expect(second_section.students).to eq(section_2['data']['students'])
         expect(second_section.provider).to eq('clever')
       end
     end
@@ -254,6 +258,35 @@ RSpec.describe Clever::Client do
         expect(second_classroom.course_number).to eq(nil)
         expect(second_classroom.grades).to eq(section_2['data']['grade'])
         expect(second_classroom.provider).to eq('clever')
+      end
+    end
+
+    describe 'enrollments' do
+      before do
+        client.connection.expects(:execute)
+          .with(Clever::SECTIONS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
+          .returns(sections_response)
+      end
+
+      it 'authenticates and returns enrollments for teachers and students' do
+        response = client.enrollments
+        expect(client.app_token).to eq(app_token)
+
+        student_enrollments = response[:student].each_with_object({}) do |enrollment, enrollments|
+          enrollments[enrollment.classroom_id] ||= []
+          enrollments[enrollment.classroom_id] << enrollment.user_id
+        end
+
+        teacher_enrollments = response[:teacher].each_with_object({}) do |enrollment, enrollments|
+          enrollments[enrollment.classroom_id] ||= []
+          enrollments[enrollment.classroom_id] << enrollment.user_id
+        end
+
+        expect(student_enrollments['5']).to eq(%w[6 7 8])
+        expect(student_enrollments['20']).to eq(%w[1 2 3])
+
+        expect(teacher_enrollments['5']).to eq(%w[5 2])
+        expect(teacher_enrollments['20']).to eq(['6'])
       end
     end
   end
