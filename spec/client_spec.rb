@@ -266,25 +266,76 @@ RSpec.describe Clever::Client do
           .returns(sections_response)
       end
 
-      it 'authenticates and returns enrollments for teachers and students' do
-        response = client.enrollments
-        expect(client.app_token).to eq(app_token)
+      context 'without classroom_ids passed in' do
+        it 'authenticates and returns enrollments for primary teachers and students' do
+          response = client.enrollments
+          expect(client.app_token).to eq(app_token)
 
-        student_enrollments = response[:student].each_with_object({}) do |enrollment, enrollments|
-          enrollments[enrollment.classroom_id] ||= []
-          enrollments[enrollment.classroom_id] << enrollment.user_id
+          student_enrollments = response[:student].each_with_object({}) do |enrollment, enrollments|
+            enrollments[enrollment.classroom_id] ||= []
+            enrollments[enrollment.classroom_id] << enrollment.user_id
+          end
+
+          teacher_enrollments = response[:teacher].each_with_object({}) do |enrollment, enrollments|
+            enrollments[enrollment.classroom_id] ||= []
+            enrollments[enrollment.classroom_id] << enrollment.user_id
+          end
+
+          expect(student_enrollments['5']).to eq(%w(6 7 8))
+          expect(student_enrollments['20']).to eq(%w(1 2 3))
+
+          expect(teacher_enrollments['5']).to eq(%w(5))
+          expect(teacher_enrollments['20']).to eq(['6'])
         end
+      end
 
-        teacher_enrollments = response[:teacher].each_with_object({}) do |enrollment, enrollments|
-          enrollments[enrollment.classroom_id] ||= []
-          enrollments[enrollment.classroom_id] << enrollment.user_id
+      context 'with classroom_ids passed in' do
+        it 'authenticates and returns enrollments for sections in classroom_ids' do
+          response = client.enrollments([section_1['data']['id']])
+          expect(client.app_token).to eq(app_token)
+
+          student_enrollments = response[:student].each_with_object({}) do |enrollment, enrollments|
+            enrollments[enrollment.classroom_id] ||= []
+            enrollments[enrollment.classroom_id] << enrollment.user_id
+          end
+
+          teacher_enrollments = response[:teacher].each_with_object({}) do |enrollment, enrollments|
+            enrollments[enrollment.classroom_id] ||= []
+            enrollments[enrollment.classroom_id] << enrollment.user_id
+          end
+
+          expect(student_enrollments['5']).to eq(%w(6 7 8))
+          expect(teacher_enrollments['5']).to eq(%w(5))
+
+          expect(student_enrollments['20']).to be_nil
+          expect(teacher_enrollments['20']).to be_nil
         end
+      end
 
-        expect(student_enrollments['5']).to eq(%w[6 7 8])
-        expect(student_enrollments['20']).to eq(%w[1 2 3])
+      context 'with shared classes flag on' do
+        it 'authenticates and returns enrollments for all teachers and students' do
+          client.shared_classes = true
 
-        expect(teacher_enrollments['5']).to eq(%w[5 2])
-        expect(teacher_enrollments['20']).to eq(['6'])
+          response = client.enrollments
+          expect(client.app_token).to eq(app_token)
+
+          student_enrollments = response[:student].each_with_object({}) do |enrollment, enrollments|
+            enrollments[enrollment.classroom_id] ||= []
+            enrollments[enrollment.classroom_id] << enrollment.user_id
+          end
+
+          teacher_enrollments = response[:teacher].each_with_object({}) do |enrollment, enrollments|
+            enrollments[enrollment.classroom_id] ||= []
+            enrollments[enrollment.classroom_id] << enrollment.user_id
+          end
+
+          expect(student_enrollments['5']).to eq(%w(6 7 8))
+          expect(student_enrollments['20']).to eq(%w(1 2 3))
+
+          expect(teacher_enrollments['5']).to eq(%w(5 2))
+          expect(teacher_enrollments['20']).to eq(['6'])
+
+        end
       end
     end
   end

@@ -9,8 +9,8 @@ module Clever
 
       def initialize(section, user_id)
         @classroom_id = section.id
-        @user_id = user_id
-        @provider = 'clever'
+        @user_id      = user_id
+        @provider     = 'clever'
       end
     end
   end
