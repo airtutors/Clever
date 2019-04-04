@@ -96,8 +96,8 @@ RSpec.shared_context 'api responses' do
           'period' => '01',
           'grade' => '5',
           'course' => '1',
-          'teachers' => %w[5 2],
-          'students' => %w[6 7 8]
+          'teachers' => %w(5 2),
+          'students' => %w(6 7 8)
         }
       }
     end
@@ -110,7 +110,7 @@ RSpec.shared_context 'api responses' do
         'grade' => '1',
         'course' => '1000',
         'teachers' => ['6'],
-        'students' => %w[1 2 3]
+        'students' => %w(1 2 3)
       }
     }
   end

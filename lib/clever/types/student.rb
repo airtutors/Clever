@@ -6,7 +6,6 @@ module Clever
       attr_reader :id,
                   :first_name,
                   :last_name,
-                  :username,
                   :provider
 
       def initialize(attributes = {})
@@ -14,9 +13,20 @@ module Clever
         @id                = data['id']
         @first_name        = data['name']['first']
         @last_name         = data['name']['last']
-        district_username  = data['credentials']['district_username']
-        @username          = district_username.present? ? district_username : data['sis_id']
+        @district_username = data['credentials']['district_username']
+        @sis_id            = data['sis_id']
+        @username          = username
         @provider          = 'clever'
+      end
+
+      def username
+        @username ||= district_username_blank? ? @sis_id : @district_username
+      end
+
+      private
+
+      def district_username_blank?
+        @district_username.nil? || @district_username['']
       end
     end
   end
