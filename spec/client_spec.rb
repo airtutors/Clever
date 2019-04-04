@@ -4,18 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Clever::Client do
   include_context 'api responses'
-  let(:vendor_key) { 'vendor_key' }
-  let(:vendor_secret) { 'vendor_secret' }
-  let(:client) do
-    Clever::Client.configure do |config|
-      config.app_id        = app_id
-      config.vendor_key    = vendor_key
-      config.vendor_secret = vendor_secret
-    end
-  end
-  let(:app_token) { '0ed35a0de3005aa1c77df310ac0375a6158881c4' }
-  let(:app_id) { '5800e1c5e16c4230146fce0' }
-  let(:status) { 200 }
 
   it 'is configurable' do
     expect(client).to be_a(Clever::Client)

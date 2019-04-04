@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'api responses' do
+  let(:vendor_key) { 'vendor_key' }
+  let(:vendor_secret) { 'vendor_secret' }
+  let(:app_token) { '0ed35a0de3005aa1c77df310ac0375a6158881c4' }
+  let(:app_id) { '5800e1c5e16c4230146fce0' }
+  let(:status) { 200 }
+
+  let(:client) do
+    Clever::Client.configure do |config|
+      config.app_id        = app_id
+      config.vendor_key    = vendor_key
+      config.vendor_secret = vendor_secret
+    end
+  end
+
   ##################################### TOKENS RESPONSE #####################################
   let(:tokens_body) do
     {

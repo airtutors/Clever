@@ -17,8 +17,6 @@ module Clever
       connection.authorization :Bearer, token
     end
 
-    private
-
     def connection
       return @connection if @connection
 
@@ -32,6 +30,14 @@ module Clever
       @connection
     end
 
+    def log(message = '')
+      return unless @client.logger
+
+      @client.logger.info message
+    end
+
+    private
+
     def raw_request(path, method, params, body)
       p "request #{path} #{params}"
       connection.public_send(method) do |request|
@@ -41,10 +47,6 @@ module Clever
         request.headers['Accept-Header'] = 'application/json'
         request.body                     = body
       end
-    end
-
-    def log(msg = '')
-      return unless @client.logger
     end
   end
 end
