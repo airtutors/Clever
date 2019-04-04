@@ -53,7 +53,8 @@ module Clever
       end
     end
 
-    def classrooms
+    # discard params to make the API behave the same as the one roster gem
+    def classrooms(*)
       authenticate
 
       fetched_courses = courses
