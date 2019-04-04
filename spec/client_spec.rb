@@ -322,9 +322,21 @@ RSpec.describe Clever::Client do
 
           expect(teacher_enrollments['5']).to eq(%w(5 2))
           expect(teacher_enrollments['20']).to eq(['6'])
-
         end
       end
+    end
+  end
+
+  describe 'types .to_h' do
+    it 'serializes instance variables' do
+      teacher = Clever::Types::Teacher.new(teacher_1)
+      expect(teacher.to_h).to eq(
+        id: teacher_1['data']['id'],
+        email: teacher_1['data']['email'],
+        first_name: teacher_1['data']['name']['first'],
+        last_name: teacher_1['data']['name']['last'],
+        provider: 'clever'
+      )
     end
   end
 end
