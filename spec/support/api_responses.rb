@@ -128,6 +128,58 @@ RSpec.shared_context 'api responses' do
       }
     }
   end
+  let(:section_3) do
+    {
+      'data' => {
+        'id' => '20',
+        'name' => 'Programming',
+        'period' => '06',
+        'grade' => '1',
+        'course' => '1000',
+        'teachers' => ['6'],
+        'students' => %w(1 2 3)
+      }
+    }
+  end
+
   let(:sections_body) { { 'data' => [section_1, section_2] } }
   let(:sections_response) { Clever::Response.new(stub(body: sections_body, status: status)) }
+
+  ################################### PAGINATION RESPONSE ###################################
+  let(:page_2_uri) { 'sections/page_2' }
+  let(:page_3_uri) { 'sections/page_3' }
+
+  let(:page_1_response) do
+    Clever::Response.new(
+      stub(
+        status: 200,
+        body: {
+          'data' => [section_1],
+          'links' => ['rel' => 'next', 'uri' => page_2_uri]
+        }
+      )
+    )
+  end
+  let(:page_2_response) do
+    Clever::Response.new(
+      stub(
+        status: 200,
+        body: {
+          'data' => [section_2],
+          'links' => ['rel' => 'next', 'uri' => page_3_uri]
+        }
+      )
+    )
+  end
+  let(:page_3_response) do
+    Clever::Response.new(
+      stub(
+        status: 200,
+        body: {
+          'data' => [section_3],
+          'links' => []
+        }
+      )
+    )
+  end
 end
