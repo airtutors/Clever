@@ -3,7 +3,7 @@
 module Clever
   module Types
     class Section < Base
-      attr_reader :id,
+      attr_reader :uid,
                   :name,
                   :period,
                   :course,
@@ -14,7 +14,7 @@ module Clever
 
       def initialize(attributes = {})
         data      = attributes['data']
-        @id       = data['id']
+        @uid      = data['id']
         @name     = data['name']
         @period   = data['period']
         @course   = data['course']

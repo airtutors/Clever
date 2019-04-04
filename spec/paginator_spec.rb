@@ -27,7 +27,7 @@ RSpec.describe Clever::Paginator do
       third_section  = sections[2]
 
       expect(first_section.class).to eq(Clever::Types::Section)
-      expect(first_section.id).to eq(section_1['data']['id'])
+      expect(first_section.uid).to eq(section_1['data']['id'])
       expect(first_section.name).to eq(section_1['data']['name'])
       expect(first_section.grades).to eq(section_1['data']['grade'])
       expect(first_section.period).to eq(section_1['data']['period'])
@@ -37,7 +37,7 @@ RSpec.describe Clever::Paginator do
       expect(first_section.provider).to eq('clever')
 
       expect(second_section.class).to eq(Clever::Types::Section)
-      expect(second_section.id).to eq(section_2['data']['id'])
+      expect(second_section.uid).to eq(section_2['data']['id'])
       expect(second_section.name).to eq(section_2['data']['name'])
       expect(second_section.grades).to eq(section_2['data']['grade'])
       expect(second_section.period).to eq(section_2['data']['period'])
@@ -47,7 +47,7 @@ RSpec.describe Clever::Paginator do
       expect(second_section.provider).to eq('clever')
 
       expect(third_section.class).to eq(Clever::Types::Section)
-      expect(third_section.id).to eq(section_3['data']['id'])
+      expect(third_section.uid).to eq(section_3['data']['id'])
       expect(third_section.name).to eq(section_3['data']['name'])
       expect(third_section.grades).to eq(section_3['data']['grade'])
       expect(third_section.period).to eq(section_3['data']['period'])

@@ -3,7 +3,7 @@
 module Clever
   module Types
     class Classroom < Base
-      attr_reader :id,
+      attr_reader :uid,
                   :name,
                   :period,
                   :course_number,
@@ -11,7 +11,7 @@ module Clever
                   :provider
 
       def initialize(section, course_number)
-        @id            = section.id
+        @uid           = section.uid
         @name          = section.name
         @period        = section.period
         @course_number = course_number

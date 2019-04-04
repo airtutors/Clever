@@ -39,7 +39,7 @@ module Clever
     end
 
     %i(students courses teachers sections).each do |record_type|
-      define_method(record_type) do |record_ids = []|
+      define_method(record_type) do |record_uids = []|
         authenticate
 
         endpoint = Clever.const_get("#{record_type.upcase}_ENDPOINT")
@@ -47,9 +47,9 @@ module Clever
 
         records = Paginator.fetch(connection, endpoint, :get, type).force
 
-        return records if record_ids.empty?
+        return records if record_uids.empty?
 
-        records.select { |record| record_ids.include?(record.id) }
+        records.select { |record| record_uids.include?(record.uid) }
       end
     end
 
@@ -60,17 +60,17 @@ module Clever
       fetched_courses = courses
 
       sections.map do |section|
-        course = fetched_courses.find { |clever_course| clever_course.id == section.course }
+        course = fetched_courses.find { |clever_course| clever_course.uid == section.course }
         Types::Classroom.new(section, course&.number)
       end
     end
 
-    def enrollments(classroom_ids = [])
+    def enrollments(classroom_uids = [])
       authenticate
 
       fetched_sections = sections
 
-      enrollments = parse_enrollments(classroom_ids, fetched_sections)
+      enrollments = parse_enrollments(classroom_uids, fetched_sections)
 
       p "Found #{enrollments.values.flatten.length} enrollments."
 
@@ -79,9 +79,9 @@ module Clever
 
     private
 
-    def parse_enrollments(classroom_ids, sections)
+    def parse_enrollments(classroom_uids, sections)
       sections.each_with_object(student: [], teacher: []) do |section, enrollments|
-        next if classroom_ids.any? && !classroom_ids.include?(section.id)
+        next if classroom_uids.any? && !classroom_uids.include?(section.uid)
 
         parse_student_enrollments!(section, enrollments)
         parse_teacher_enrollments!(section, enrollments)

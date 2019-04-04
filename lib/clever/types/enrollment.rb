@@ -3,14 +3,14 @@
 module Clever
   module Types
     class Enrollment < Base
-      attr_reader :classroom_id,
-                  :user_id,
+      attr_reader :classroom_uid,
+                  :user_uid,
                   :provider
 
-      def initialize(section, user_id)
-        @classroom_id = section.id
-        @user_id      = user_id
-        @provider     = 'clever'
+      def initialize(section, user_uid)
+        @classroom_uid = section.uid
+        @user_uid      = user_uid
+        @provider      = 'clever'
       end
     end
   end

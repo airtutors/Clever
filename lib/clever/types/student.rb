@@ -3,14 +3,14 @@
 module Clever
   module Types
     class Student < Base
-      attr_reader :id,
+      attr_reader :uid,
                   :first_name,
                   :last_name,
                   :provider
 
       def initialize(attributes = {})
         data               = attributes['data']
-        @id                = data['id']
+        @uid               = data['id']
         @first_name        = data['name']['first']
         @last_name         = data['name']['last']
         @district_username = data['credentials']['district_username']
