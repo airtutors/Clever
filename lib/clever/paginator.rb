@@ -18,7 +18,7 @@ module Clever
           response = request(@next_path || @path)
           body = response.body
 
-          raise "Failed to fetch #{@path}" unless response.success?
+          fail "Failed to fetch #{@path}" unless response.success?
 
           body.each { |item| yielder << @type.new(item) } if body.any?
 

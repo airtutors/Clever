@@ -82,12 +82,19 @@ module Clever
       sections.each_with_object(student: [], teacher: []) do |section, enrollments|
         next if classroom_ids.any? && !classroom_ids.include?(section.id)
 
-        section.students.each { |record| enrollments[:student] << Types::Enrollment.new(section, record) }
-
-        teachers = shared_classes ? section.teachers : [section.teachers.first]
-
-        teachers.each { |record| enrollments[:teacher] << Types::Enrollment.new(section, record) }
+        parse_student_enrollments!(section, enrollments)
+        parse_teacher_enrollments!(section, enrollments)
       end
+    end
+
+    def parse_student_enrollments!(section, enrollments)
+      section.students.each { |record| enrollments[:student] << Types::Enrollment.new(section, record) }
+    end
+
+    def parse_teacher_enrollments!(section, enrollments)
+      teachers = shared_classes ? section.teachers : [section.teachers.first]
+
+      teachers.each { |record| enrollments[:teacher] << Types::Enrollment.new(section, record) }
     end
 
     def set_token(tokens, app_id)
