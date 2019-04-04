@@ -78,4 +78,11 @@ RSpec.describe Clever::Connection do
       end
     end
   end
+
+  describe '#set_token' do
+    it 'places token as bearer' do
+      connection.set_token(app_token)
+      expect(connection.connection.headers['Authorization']).to eq("Bearer #{app_token}")
+    end
+  end
 end
