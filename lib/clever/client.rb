@@ -2,7 +2,8 @@
 
 module Clever
   class Client
-    attr_accessor :app_id, :app_token, :sync_id, :logger, :vendor_key, :vendor_secret
+    attr_accessor :app_id, :app_token, :sync_id, :logger,
+                  :vendor_key, :vendor_secret, :shared_classes
 
     attr_reader :api_url, :tokens_endpoint
 
@@ -18,9 +19,11 @@ module Clever
     end
 
     def authenticate(app_id = @app_id)
+      return if @app_token
+
       response = tokens
 
-      raise ConnectionError unless response.success?
+      fail ConnectionError unless response.success?
 
       set_token(response, app_id)
     end
@@ -35,9 +38,9 @@ module Clever
       response
     end
 
-    %i[students courses teachers sections].each do |record_type|
+    %i(students courses teachers sections).each do |record_type|
       define_method(record_type) do |record_ids = []|
-        authenticate unless @app_token
+        authenticate
 
         endpoint = Clever.const_get("#{record_type.upcase}_ENDPOINT")
         type = Types.const_get(record_type.to_s.capitalize[0..-2])
@@ -46,12 +49,12 @@ module Clever
 
         return records if record_ids.empty?
 
-        records.reject { |record| record_ids.exclude?(record.id) }
+        records.select { |record| record_ids.include?(record.id) }
       end
     end
 
     def classrooms
-      authenticate unless @app_token
+      authenticate
 
       fetched_courses = courses
 
@@ -62,17 +65,11 @@ module Clever
     end
 
     def enrollments(classroom_ids = [])
-      authenticate unless @app_token
+      authenticate
 
       fetched_sections = sections
 
-      enrollments = fetched_sections.each_with_object(student: [], teacher: []) do |section, enrollments|
-        next if classroom_ids.any? && classroom_ids.exclude?(section.id)
-
-        %i[student teacher].each do |kind|
-          section.public_send("#{kind}s").each { |record| enrollments[kind] << Types::Enrollment.new(section, record) }
-        end
-      end
+      enrollments = parse_enrollments(classroom_ids, fetched_sections)
 
       p "Found #{enrollments.values.flatten.length} enrollments."
 
@@ -81,10 +78,22 @@ module Clever
 
     private
 
+    def parse_enrollments(classroom_ids, sections)
+      sections.each_with_object(student: [], teacher: []) do |section, enrollments|
+        next if classroom_ids.any? && !classroom_ids.include?(section.id)
+
+        section.students.each { |record| enrollments[:student] << Types::Enrollment.new(section, record) }
+
+        teachers = shared_classes ? section.teachers : [section.teachers.first]
+
+        teachers.each { |record| enrollments[:teacher] << Types::Enrollment.new(section, record) }
+      end
+    end
+
     def set_token(tokens, app_id)
       district_token = tokens.body.find { |district| district.owner['id'] == app_id }
 
-      raise DistrictNotFound unless district_token
+      fail DistrictNotFound unless district_token
 
       connection.set_token(district_token.access_token)
 

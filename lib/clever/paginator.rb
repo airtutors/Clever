@@ -24,7 +24,7 @@ module Clever
 
           @next_path = response.next_uri
 
-          raise StopIteration unless @next_path
+          fail StopIteration unless @next_path
         end
       end.lazy
     end

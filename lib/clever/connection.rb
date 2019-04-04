@@ -35,11 +35,11 @@ module Clever
     def raw_request(path, method, params, body)
       p "request #{path} #{params}"
       connection.public_send(method) do |request|
-        request.options.open_timeout        = OPEN_TIMEOUT
-        request.options.timeout             = TIMEOUT
+        request.options.open_timeout     = OPEN_TIMEOUT
+        request.options.timeout          = TIMEOUT
         request.url path, params
         request.headers['Accept-Header'] = 'application/json'
-        request.body = body
+        request.body                     = body
       end
     end
 
