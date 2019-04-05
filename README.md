@@ -1,8 +1,6 @@
 # Clever
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/clever`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This is a simple Ruby API wrapper for Clever.
 
 ## Installation
 
@@ -22,7 +20,75 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Configuration
+The gem can be initialized as follows:
+
+```ruby
+client = Clever::Client.configure do |config|
+  config.app_id        = 'app_id for district'
+  config.vendor_key    = 'vendor_key for tci'
+  config.vendor_secret = 'vendor_secret for tci'
+end
+```
+### Requests
+This gem support requesting:
+  - Students
+  - Teachers
+  - Courses
+  - Sections
+  - Classrooms
+  - Enrollments
+
+#### Students
+- Request all students:
+  ```ruby
+  client.students
+  ```
+- Request a subset of students, filtered by their `id`:
+  ```ruby
+  client.students([student_1['data']['id']], student_2['data']['id'], …])
+  ```
+#### Teachers
+- Request all teachers:
+  ```ruby
+  client.teachers
+  ```
+- Request a subset of teachers, filtered by their `id`:
+  ```ruby
+  client.teachers([teacher_1['data']['id']], teacher_2['data']['id'], …])
+  ```
+#### Courses
+- Request all courses:
+  ```ruby
+  client.teachers
+  ```
+- Request a subset of courses, filtered by their `id`:
+  ```ruby
+  client.courses([course_1['data']['id']], course_2['data']['id'], …])
+  ```
+#### Sections
+- Request all sections:
+  ```ruby
+  client.sections
+  ```
+- Request a subset of sections, filtered by their `id`:
+  ```ruby
+  client.sections([section_1['data']['id']], section_2['data']['id'], …])
+  ```
+#### Classrooms
+- Request all classrooms
+  ```ruby
+  client.classrooms
+  ```
+#### Enrollments
+- Request all enrollments
+  ```ruby
+  client.enrollments
+  ```
+- Request a subset of enrollments, filtered by their classroom's `id`:
+  ```ruby
+  client.enrollments([classroom_1['data']['id'], classroom_2['data']['id']], …)
+  ```
 
 ## Development
 
