@@ -100,10 +100,11 @@ RSpec.describe Clever::Client do
           response = client.students
           expect(client.app_token).to eq(app_token)
 
-          expect(response.length).to eq(2)
+          expect(response.length).to eq(3)
 
           first_student  = response[0]
           second_student = response[1]
+          third_student = response[2]
 
           expect(first_student.class).to eq(Clever::Types::Student)
           expect(first_student.uid).to eq(student_1['data']['id'])
@@ -116,8 +117,15 @@ RSpec.describe Clever::Client do
           expect(second_student.uid).to eq(student_2['data']['id'])
           expect(second_student.first_name).to eq(student_2['data']['name']['first'])
           expect(second_student.last_name).to eq(student_2['data']['name']['last'])
-          expect(second_student.username).to eq(student_2['data']['sis_id'])
+          expect(second_student.username).to eq(student_2['data']['email'])
           expect(second_student.provider).to eq('clever')
+
+          expect(third_student.class).to eq(Clever::Types::Student)
+          expect(third_student.uid).to eq(student_3['data']['id'])
+          expect(third_student.first_name).to eq(student_3['data']['name']['first'])
+          expect(third_student.last_name).to eq(student_3['data']['name']['last'])
+          expect(third_student.username).to eq(student_3['data']['credentials']['district_username'])
+          expect(third_student.provider).to eq('clever')
         end
       end
 
@@ -138,6 +146,58 @@ RSpec.describe Clever::Client do
         end
       end
 
+      context 'with username_source' do
+        context 'district_username' do
+          let(:username_source) { 'district_username' }
+          it 'returns the proper usernames' do
+            response = client.students
+
+            expect(response.length).to eq(3)
+
+            first_student  = response[0]
+            second_student = response[1]
+            third_student  = response[2]
+
+            expect(first_student.username).to eq(student_1['data']['sis_id'])
+            expect(second_student.username).to eq(student_2['data']['email'])
+            expect(third_student.username).to eq(student_3['data']['credentials']['district_username'])
+          end
+        end
+
+        context 'email' do
+          let(:username_source) { 'email' }
+          it 'returns the proper usernames' do
+            response = client.students
+
+            expect(response.length).to eq(3)
+
+            first_student  = response[0]
+            second_student = response[1]
+            third_student  = response[2]
+
+            expect(first_student.username).to eq(student_1['data']['sis_id'])
+            expect(second_student.username).to eq(student_2['data']['email'])
+            expect(third_student.username).to eq(student_3['data']['email'])
+          end
+        end
+
+        context 'sis_id' do
+          let(:username_source) { 'sis_id' }
+          it 'returns the proper usernames' do
+            response = client.students
+
+            expect(response.length).to eq(3)
+
+            first_student  = response[0]
+            second_student = response[1]
+            third_student  = response[2]
+
+            expect(first_student.username).to eq(student_1['data']['sis_id'])
+            expect(second_student.username).to eq(student_2['data']['sis_id'])
+            expect(third_student.username).to eq(student_3['data']['credentials']['district_username'])
+          end
+        end
+      end
     end
 
     describe 'teachers' do
@@ -373,15 +433,30 @@ RSpec.describe Clever::Client do
   end
 
   describe 'types .to_h' do
-    it 'serializes instance variables' do
-      teacher = Clever::Types::Teacher.new(teacher_1)
-      expect(teacher.to_h).to eq(
-        uid: teacher_1['data']['id'],
-        email: teacher_1['data']['email'],
-        first_name: teacher_1['data']['name']['first'],
-        last_name: teacher_1['data']['name']['last'],
-        provider: 'clever'
-      )
+    context 'teacher' do
+      it 'serializes the expected fields' do
+        teacher = Clever::Types::Teacher.new(teacher_1)
+        expect(teacher.to_h).to eq(
+          uid: teacher_1['data']['id'],
+          email: teacher_1['data']['email'],
+          first_name: teacher_1['data']['name']['first'],
+          last_name: teacher_1['data']['name']['last'],
+          provider: 'clever'
+        )
+      end
+    end
+
+    context 'student' do
+      it 'serializes the expected fields' do
+        student = Clever::Types::Student.new(student_1)
+        expect(student.to_h).to eq(
+          uid: student_1['data']['id'],
+          first_name: student_1['data']['name']['first'],
+          last_name: student_1['data']['name']['last'],
+          username: student_1['data']['sis_id'],
+          provider: 'clever'
+        )
+      end
     end
   end
 end

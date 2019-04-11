@@ -4,11 +4,12 @@ module Clever
   PAGE_LIMIT = 10_000
 
   class Paginator
-    def initialize(connection, path, method, type)
+    def initialize(connection, path, method, type, client: nil)
       @connection = connection
       @path       = path
       @method     = method
       @type       = type
+      @client     = client
       @next_path  = nil
     end
 
@@ -20,7 +21,7 @@ module Clever
 
           fail "Failed to fetch #{@path}" unless response.success?
 
-          body.each { |item| yielder << @type.new(item) } if body.any?
+          body.each { |item| yielder << @type.new(item, client: @client) } if body.any?
 
           @next_path = response.next_uri
 

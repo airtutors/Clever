@@ -3,7 +3,8 @@
 module Clever
   class Client
     attr_accessor :app_id, :app_token, :sync_id, :logger,
-                  :vendor_key, :vendor_secret, :shared_classes
+                  :vendor_key, :vendor_secret, :shared_classes,
+                  :username_source
 
     attr_reader :api_url, :tokens_endpoint
 
@@ -45,7 +46,7 @@ module Clever
         endpoint = Clever.const_get("#{record_type.upcase}_ENDPOINT")
         type = Types.const_get(record_type.to_s.capitalize[0..-2])
 
-        records = Paginator.fetch(connection, endpoint, :get, type).force
+        records = Paginator.fetch(connection, endpoint, :get, type, client: self).force
 
         return records if record_uids.empty?
 

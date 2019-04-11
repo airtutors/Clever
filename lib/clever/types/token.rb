@@ -9,7 +9,7 @@ module Clever
                   :access_token,
                   :scopes
 
-      def initialize(attributes = {})
+      def initialize(attributes = {}, *)
         @uid          = attributes['id']
         @created      = attributes['created']
         @owner        = attributes['owner']

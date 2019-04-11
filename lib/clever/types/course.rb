@@ -9,7 +9,7 @@ module Clever
                   :number,
                   :provider
 
-      def initialize(attributes = {})
+      def initialize(attributes = {}, *)
         data      = attributes['data']
         @uid      = data['id']
         @district = data['district']

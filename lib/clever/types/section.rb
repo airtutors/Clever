@@ -12,7 +12,7 @@ module Clever
                   :teachers,
                   :provider
 
-      def initialize(attributes = {})
+      def initialize(attributes = {}, *)
         data      = attributes['data']
         @uid      = data['id']
         @name     = data['name']

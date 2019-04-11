@@ -9,7 +9,7 @@ module Clever
                   :last_name,
                   :provider
 
-      def initialize(attributes = {})
+      def initialize(attributes = {}, *)
         data        = attributes['data']
         @uid        = data['id']
         @email      = data['email']

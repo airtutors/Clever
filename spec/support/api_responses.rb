@@ -6,12 +6,14 @@ RSpec.shared_context 'api responses' do
   let(:app_token) { '0ed35a0de3005aa1c77df310ac0375a6158881c4' }
   let(:app_id) { '5800e1c5e16c4230146fce0' }
   let(:status) { 200 }
+  let(:username_source) { nil }
 
   let(:client) do
     Clever::Client.configure do |config|
-      config.app_id        = app_id
-      config.vendor_key    = vendor_key
-      config.vendor_secret = vendor_secret
+      config.app_id          = app_id
+      config.vendor_key      = vendor_key
+      config.vendor_secret   = vendor_secret
+      config.username_source = username_source
     end
   end
 
@@ -30,6 +32,7 @@ RSpec.shared_context 'api responses' do
   let(:tokens_response) { Clever::Response.new(stub(body: tokens_body, status: status)) }
 
   #################################### STUDENTS RESPONSE ####################################
+  # username is sis_id
   let(:student_1) do
     {
       'data' => {
@@ -37,22 +40,38 @@ RSpec.shared_context 'api responses' do
         'name' => { 'first' => 'jane', 'last' => 'doe' },
         'credentials' => { 'district_username' => '' },
         'grade' => '1',
-        'sis_id' => '121314'
+        'sis_id' => '121314',
+        'email' => ''
       }
     }
   end
+  # username is email
   let(:student_2) do
     {
       'data' => {
         'id' => '5b1f7442',
         'name' => { 'first' => 'johnny', 'last' => 'appleseed' },
-        'credentials' => { 'district_username' => 'applej0n' },
+        'credentials' => { 'district_username' => '' },
         'grade' => '6',
-        'sis_id' => '213154'
+        'sis_id' => '213154',
+        'email' => 'jseed@school.com'
       }
     }
   end
-  let(:students_body) { { 'data' => [student_1, student_2] } }
+  # username is district_username
+  let(:student_3) do
+    {
+      'data' => {
+        'id' => '4521ffc9',
+        'name' => { 'first' => 'thomas', 'last' => 'tank' },
+        'credentials' => { 'district_username' => 'tomtank' },
+        'grade' => '5',
+        'sis_id' => '',
+        'email' => 'choochoo@school.com'
+      }
+    }
+  end
+  let(:students_body) { { 'data' => [student_1, student_2, student_3] } }
   let(:students_response) { Clever::Response.new(stub(body: students_body, status: status)) }
 
   #################################### COURSES RESPONSE #####################################

@@ -7,7 +7,7 @@ module Clever
                   :user_uid,
                   :provider
 
-      def initialize(section, user_uid)
+      def initialize(section, user_uid, *)
         @classroom_uid = section.uid
         @user_uid      = user_uid
         @provider      = 'clever'

@@ -10,7 +10,7 @@ module Clever
                   :grades,
                   :provider
 
-      def initialize(section, course_number)
+      def initialize(section, course_number, *)
         @uid           = section.uid
         @name          = section.name
         @period        = section.period
