@@ -21,7 +21,7 @@ module Clever
 
           fail "Failed to fetch #{@path}" unless response.success?
 
-          body.each { |item| yielder << @type.new(item, client: @client) } if body.any?
+          body.each { |item| yielder << @type.new(item['data'], client: @client) } if body.any?
 
           @next_path = response.next_uri
 

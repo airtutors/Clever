@@ -435,7 +435,7 @@ RSpec.describe Clever::Client do
   describe 'types .to_h' do
     context 'teacher' do
       it 'serializes the expected fields' do
-        teacher = Clever::Types::Teacher.new(teacher_1)
+        teacher = Clever::Types::Teacher.new(teacher_1['data'])
         expect(teacher.to_h).to eq(
           uid: teacher_1['data']['id'],
           email: teacher_1['data']['email'],
@@ -448,7 +448,7 @@ RSpec.describe Clever::Client do
 
     context 'student' do
       it 'serializes the expected fields' do
-        student = Clever::Types::Student.new(student_1)
+        student = Clever::Types::Student.new(student_1['data'])
         expect(student.to_h).to eq(
           uid: student_1['data']['id'],
           first_name: student_1['data']['name']['first'],

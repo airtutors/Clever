@@ -13,14 +13,13 @@ module Clever
                   :provider
 
       def initialize(attributes = {}, *)
-        data      = attributes['data']
-        @uid      = data['id']
-        @name     = data['name']
-        @period   = data['period']
-        @course   = data['course']
-        @grades   = data['grade']
-        @students = data['students']
-        @teachers = data['teachers']
+        @uid      = attributes['id']
+        @name     = attributes['name']
+        @period   = attributes['period']
+        @course   = attributes['course']
+        @grades   = attributes['grade']
+        @students = attributes['students']
+        @teachers = attributes['teachers']
         @provider = 'clever'
       end
     end

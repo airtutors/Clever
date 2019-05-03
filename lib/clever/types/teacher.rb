@@ -10,11 +10,10 @@ module Clever
                   :provider
 
       def initialize(attributes = {}, *)
-        data        = attributes['data']
-        @uid        = data['id']
-        @email      = data['email']
-        @first_name = data['name']['first']
-        @last_name  = data['name']['last']
+        @uid        = attributes['id']
+        @email      = attributes['email']
+        @first_name = attributes['name']['first']
+        @last_name  = attributes['name']['last']
         @provider   = 'clever'
       end
     end

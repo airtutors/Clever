@@ -10,12 +10,12 @@ module Clever
                   :grades,
                   :provider
 
-      def initialize(section, course_number, *)
-        @uid           = section.uid
-        @name          = section.name
-        @period        = section.period
-        @course_number = course_number
-        @grades        = section.grades
+      def initialize(attributes = {}, *)
+        @uid           = attributes['id']
+        @name          = attributes['name']
+        @period        = attributes['period']
+        @course_number = attributes['course_number']
+        @grades        = attributes['grades']
         @provider      = 'clever'
       end
     end

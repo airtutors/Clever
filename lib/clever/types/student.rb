@@ -9,13 +9,12 @@ module Clever
                   :provider
 
       def initialize(attributes = {}, client: nil)
-        data               = attributes['data']
-        @uid               = data['id']
-        @first_name        = data['name']['first']
-        @last_name         = data['name']['last']
-        @district_username = data['credentials']['district_username']
-        @sis_id            = data['sis_id']
-        @email             = data['email']
+        @uid               = attributes['id']
+        @first_name        = attributes['name']['first']
+        @last_name         = attributes['name']['last']
+        @district_username = attributes['credentials']['district_username']
+        @sis_id            = attributes['sis_id']
+        @email             = attributes['email']
         @username          = username(client)
         @provider          = 'clever'
       end

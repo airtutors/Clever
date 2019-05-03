@@ -62,7 +62,13 @@ module Clever
 
       sections.map do |section|
         course = fetched_courses.find { |clever_course| clever_course.uid == section.course }
-        Types::Classroom.new(section, course&.number)
+        Types::Classroom.new(
+          'id' => section.uid,
+          'name' => section.name,
+          'period' => section.period,
+          'course_number' => course&.number,
+          'grades' => section.grades
+        )
       end
     end
 
@@ -90,13 +96,23 @@ module Clever
     end
 
     def parse_student_enrollments!(section, enrollments)
-      section.students.each { |record| enrollments[:student] << Types::Enrollment.new(section, record) }
+      section.students.each do |student_uid|
+        enrollments[:student] << Types::Enrollment.new(
+          'classroom_uid' => section.uid,
+          'user_uid' => student_uid
+        )
+      end
     end
 
     def parse_teacher_enrollments!(section, enrollments)
       teachers = shared_classes ? section.teachers : [section.teachers.first]
 
-      teachers.each { |record| enrollments[:teacher] << Types::Enrollment.new(section, record) }
+      teachers.each do |teacher_uid|
+        enrollments[:teacher] << Types::Enrollment.new(
+          'classroom_uid' => section.uid,
+          'user_uid' => teacher_uid
+        )
+      end
     end
 
     def set_token(tokens, app_id)
