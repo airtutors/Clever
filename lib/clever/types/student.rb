@@ -46,7 +46,7 @@ module Clever
       end
 
       def username_from(username_source)
-        return if username_source.blank?
+        return if blank?(username_source)
 
         presence(instance_variable_get("@#{username_source}"))
       end
