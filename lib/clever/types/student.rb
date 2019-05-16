@@ -12,7 +12,7 @@ module Clever
         @uid               = attributes['id']
         @first_name        = attributes['name']['first']
         @last_name         = attributes['name']['last']
-        @district_username = attributes['credentials']['district_username']
+        @district_username = attributes.dig('credentials', 'district_username')
         @sis_id            = attributes['sis_id']
         @email             = attributes['email']
         @username          = username(client)
@@ -46,7 +46,7 @@ module Clever
       end
 
       def username_from(username_source)
-        return unless username_source
+        return if username_source.blank?
 
         presence(instance_variable_get("@#{username_source}"))
       end
