@@ -84,6 +84,12 @@ module Clever
       enrollments
     end
 
+    def send_grade(request_body)
+      authenticate
+
+      @connection.execute(GRADES_ENDPOINT, :post, nil, request_body)
+    end
+
     private
 
     def parse_enrollments(classroom_uids, sections)

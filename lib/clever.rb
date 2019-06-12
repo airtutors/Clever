@@ -25,6 +25,7 @@ module Clever
   COURSES_ENDPOINT  = '/v2.0/courses'
   SECTIONS_ENDPOINT = '/v2.0/sections'
   TEACHERS_ENDPOINT = '/v2.0/teachers'
+  GRADES_ENDPOINT   = 'https://grades-api.beta.clever.com/v1/grade'
 
   class DistrictNotFound < StandardError; end
   class ConnectionError < StandardError; end

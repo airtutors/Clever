@@ -82,6 +82,38 @@ RSpec.describe Clever::Client do
     end
   end
 
+  describe 'send_grade' do
+    before do
+      client.connection.expects(:execute).with(Clever::TOKENS_ENDPOINT).returns(tokens_response)
+      client.connection.expects(:set_token).with(app_token)
+      client.connection.expects(:execute)
+        .with(Clever::GRADES_ENDPOINT, :post, nil, request_body)
+        .returns(mock_response)
+    end
+    let(:request_body) do
+      { userID: 'userId', assignmentId: 'assignmentId', scoreGiven: 1, scoreMaximum: 100 }
+    end
+    let(:response) { client.send_grade(request_body) }
+
+    context 'unsuccessful response' do
+      let(:mock_response) { Clever::Response.new(stub(body: nil, status: 401)) }
+
+      it 'returns a failed response' do
+        expect(response.success?).to eq(false)
+        expect(response.status).to eq(401)
+      end
+    end
+
+    context 'successful response' do
+      let(:mock_response) { Clever::Response.new(stub(body: nil, status: 200)) }
+
+      it 'returns a response with the body mapped' do
+        expect(response.success?).to eq(true)
+        expect(response.status).to eq(200)
+      end
+    end
+  end
+
   describe 'district data requests' do
     before do
       client.connection.expects(:execute).with(Clever::TOKENS_ENDPOINT).returns(tokens_response)
