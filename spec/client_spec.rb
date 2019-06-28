@@ -409,7 +409,7 @@ RSpec.describe Clever::Client do
           expect(student_enrollments['5']).to eq(%w(6 7 8))
           expect(student_enrollments['20']).to eq(%w(1 2 3))
 
-          expect(teacher_enrollments['5']).to eq(%w(5))
+          expect(teacher_enrollments['5']).to eq(%w(5 2))
           expect(teacher_enrollments['20']).to eq(['6'])
         end
       end
@@ -430,35 +430,10 @@ RSpec.describe Clever::Client do
           end
 
           expect(student_enrollments['5']).to eq(%w(6 7 8))
-          expect(teacher_enrollments['5']).to eq(%w(5))
+          expect(teacher_enrollments['5']).to eq(%w(5 2))
 
           expect(student_enrollments['20']).to be_nil
           expect(teacher_enrollments['20']).to be_nil
-        end
-      end
-
-      context 'with shared classes flag on' do
-        it 'authenticates and returns enrollments for all teachers and students' do
-          client.shared_classes = true
-
-          response = client.enrollments
-          expect(client.app_token).to eq(app_token)
-
-          student_enrollments = response[:student].each_with_object({}) do |enrollment, enrollments|
-            enrollments[enrollment.classroom_uid] ||= []
-            enrollments[enrollment.classroom_uid] << enrollment.user_uid
-          end
-
-          teacher_enrollments = response[:teacher].each_with_object({}) do |enrollment, enrollments|
-            enrollments[enrollment.classroom_uid] ||= []
-            enrollments[enrollment.classroom_uid] << enrollment.user_uid
-          end
-
-          expect(student_enrollments['5']).to eq(%w(6 7 8))
-          expect(student_enrollments['20']).to eq(%w(1 2 3))
-
-          expect(teacher_enrollments['5']).to eq(%w(5 2))
-          expect(teacher_enrollments['20']).to eq(['6'])
         end
       end
     end

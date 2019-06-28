@@ -3,8 +3,7 @@
 module Clever
   class Client
     attr_accessor :app_id, :app_token, :sync_id, :logger,
-                  :vendor_key, :vendor_secret, :shared_classes,
-                  :username_source
+                  :vendor_key, :vendor_secret, :username_source
 
     attr_reader :api_url, :tokens_endpoint
 
@@ -111,9 +110,7 @@ module Clever
     end
 
     def parse_teacher_enrollments!(section, enrollments)
-      teachers = shared_classes ? section.teachers : [section.teachers.first]
-
-      teachers.each do |teacher_uid|
+      section.teachers.each do |teacher_uid|
         enrollments[:teacher] << Types::Enrollment.new(
           'classroom_uid' => section.uid,
           'user_uid' => teacher_uid
