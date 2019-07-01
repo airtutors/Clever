@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Clever
-  PAGE_LIMIT = 10_000
+  PAGE_LIMIT  = 10_000
+  EVENT_TYPES = %w(students teachers sections).freeze
 
   class Paginator
     def initialize(connection, path, method, type, client: nil)
@@ -21,7 +22,7 @@ module Clever
 
           fail "Failed to fetch #{@path}" unless response.success?
 
-          body.each { |item| yielder << @type.new(item['data'], client: @client) } if body.any?
+          body.each { |item| add_record(yielder, item) } if body.any?
 
           @next_path = response.next_uri
 
@@ -35,6 +36,18 @@ module Clever
     end
 
     private
+
+    def add_record(yielder, item)
+      return unless should_add_record?(item)
+
+      yielder << @type.new(item['data'], client: @client)
+    end
+
+    def should_add_record?(item)
+      return true unless @type == Clever::Types::Event
+
+      item['data']['type'].start_with?(*EVENT_TYPES)
+    end
 
     def request(path = @path)
       @connection.execute(path, @method, limit: PAGE_LIMIT)

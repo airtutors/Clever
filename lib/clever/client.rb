@@ -38,6 +38,13 @@ module Clever
       response
     end
 
+    def events(starting_after)
+      authenticate
+
+      endpoint = "#{Clever::EVENTS_ENDPOINT}?starting_after=#{starting_after}"
+      Paginator.fetch(connection, endpoint, :get, Types::Event, client: self).force
+    end
+
     %i(students courses teachers sections).each do |record_type|
       define_method(record_type) do |record_uids = []|
         authenticate
