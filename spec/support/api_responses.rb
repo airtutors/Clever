@@ -208,7 +208,8 @@ RSpec.shared_context 'api responses' do
       'data' => {
         'id' => 'e2e314',
         'type' => 'students.created',
-        'data' => { 'object' => student_1 } }
+        'data' => { 'object' => student_1['data'] }
+      }
     }
   end
   let(:event_2) do
@@ -216,7 +217,8 @@ RSpec.shared_context 'api responses' do
       'data' => {
         'id' => '134ffd',
         'type' => 'teachers.updated',
-        'data' => { 'object' => teacher_1 } }
+        'data' => { 'object' => teacher_1['data'] }
+      }
     }
   end
   let(:event_3) do
@@ -224,7 +226,8 @@ RSpec.shared_context 'api responses' do
       'data' => {
         'id' => '87abcc',
         'type' => 'sections.deleted',
-        'data' => { 'object' => section_1 } }
+        'data' => { 'object' => section_1['data'] }
+      }
     }
   end
   let(:event_4) do
@@ -232,7 +235,8 @@ RSpec.shared_context 'api responses' do
       'data' => {
         'id' => 'e12316',
         'type' => 'schooladmins.created',
-        'data' => { 'object' => teacher_2 } }
+        'data' => { 'object' => teacher_2['data'] }
+      }
     }
   end
   let(:event_5) do
