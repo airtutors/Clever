@@ -13,6 +13,7 @@ require 'clever/types/base'
 require 'clever/types/classroom'
 require 'clever/types/course'
 require 'clever/types/enrollment'
+require 'clever/types/event'
 require 'clever/types/student'
 require 'clever/types/section'
 require 'clever/types/teacher'
@@ -25,6 +26,7 @@ module Clever
   COURSES_ENDPOINT  = '/v2.0/courses'
   SECTIONS_ENDPOINT = '/v2.0/sections'
   TEACHERS_ENDPOINT = '/v2.0/teachers'
+  EVENTS_ENDPOINT   = '/v1.2/events'
   GRADES_ENDPOINT   = 'https://grades-api.beta.clever.com/v1/grade'
 
   class DistrictNotFound < StandardError; end

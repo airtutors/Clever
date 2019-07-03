@@ -201,4 +201,92 @@ RSpec.shared_context 'api responses' do
       )
     )
   end
+
+  ##################################### EVENTS RESPONSE #####################################
+  let(:event_1) do
+    {
+      'data' => {
+        'id' => 'e2e314',
+        'type' => 'students.created',
+        'data' => { 'object' => student_1['data'] }
+      }
+    }
+  end
+  let(:event_2) do
+    {
+      'data' => {
+        'id' => '134ffd',
+        'type' => 'teachers.updated',
+        'data' => { 'object' => teacher_1['data'] }
+      }
+    }
+  end
+  let(:event_3) do
+    {
+      'data' => {
+        'id' => '87abcc',
+        'type' => 'sections.deleted',
+        'data' => { 'object' => section_1['data'] }
+      }
+    }
+  end
+  let(:event_4) do
+    {
+      'data' => {
+        'id' => 'e12316',
+        'type' => 'schooladmins.created',
+        'data' => { 'object' => teacher_2['data'] }
+      }
+    }
+  end
+  let(:event_5) do
+    {
+      'data' => {
+        'id' => 'aab341',
+        'type' => 'districts.updated',
+        'data' => {
+          'object' => {
+            'id' => app_id,
+            'name' => 'some fake district'
+          }
+        }
+      }
+    }
+  end
+  let(:event_6) do
+    {
+      'data' => {
+        'id' => 'fafc31',
+        'type' => 'schools.deleted',
+        'data' => {
+          'object' => {
+            'id' => 'ef6013e',
+            'district' => app_id,
+            'name' => 'some fake school',
+            'sis_id' => 'f4k3s1s1d'
+          }
+        }
+      }
+    }
+  end
+  let(:event_7) do
+    {
+      'data' => {
+        'id' => 'abee32',
+        'type' => 'studentcontacts.created',
+        'data' => {
+          'object' => {
+            'id' => 'e133ee6',
+            'student' => student_1['data']['id'],
+            'district' => app_id
+          }
+        }
+      }
+    }
+  end
+
+  let(:events_body) do
+    { 'data' => [event_1, event_2, event_3, event_4, event_5, event_6, event_7] }
+  end
+  let(:events_response) { Clever::Response.new(stub(body: events_body, status: status)) }
 end

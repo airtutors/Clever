@@ -437,6 +437,42 @@ RSpec.describe Clever::Client do
         end
       end
     end
+
+    describe 'events' do
+      let(:starting_after) { '12345' }
+      before do
+        client.connection.expects(:execute)
+          .with("#{Clever::EVENTS_ENDPOINT}?starting_after=#{starting_after}", :get, limit: Clever::PAGE_LIMIT)
+          .returns(events_response)
+      end
+
+
+      it 'only returns the desired event types' do
+        response = client.events(starting_after)
+        expect(response.length).to eq(3)
+
+        student_created_response = response[0]
+        teacher_updated_response = response[1]
+        section_deleted_response = response[2]
+
+        expect(student_created_response.uid).to eq(event_1['data']['id'])
+        expect(student_created_response.type).to eq('students')
+        expect(student_created_response.action).to eq('created')
+        expect(student_created_response.provider).to eq('clever')
+
+        expect(teacher_updated_response.uid).to eq(event_2['data']['id'])
+        expect(teacher_updated_response.type).to eq('teachers')
+        expect(teacher_updated_response.action).to eq('updated')
+        expect(teacher_updated_response.provider).to eq('clever')
+
+        expect(section_deleted_response.uid).to eq(event_3['data']['id'])
+        expect(section_deleted_response.type).to eq('sections')
+        expect(section_deleted_response.action).to eq('deleted')
+        expect(section_deleted_response.provider).to eq('clever')
+
+        expect(response.map(&:type).all? { |type| Clever::EVENT_TYPES.include?(type) }).to eq(true)
+      end
+    end
   end
 
   describe 'types .to_h' do
