@@ -122,18 +122,18 @@ RSpec.shared_context 'api responses' do
 
   #################################### SECTIONS RESPONSE ####################################
   let(:section_1) do
-      {
-        'data' => {
-          'id' => '5',
-          'name' => 'Social Studies Grade Five',
-          'period' => '01',
-          'grade' => '5',
-          'course' => '1',
-          'teachers' => %w(5 2),
-          'students' => %w(6 7 8)
-        }
+    {
+      'data' => {
+        'id' => '5',
+        'name' => 'Social Studies Grade Five',
+        'period' => '01',
+        'grade' => '5',
+        'course' => '1',
+        'teachers' => %w(5 2),
+        'students' => %w(6 7 8)
       }
-    end
+    }
+  end
   let(:section_2) do
     {
       'data' => {
@@ -285,8 +285,8 @@ RSpec.shared_context 'api responses' do
     }
   end
 
-  let(:events_body) do
-    { 'data' => [event_1, event_2, event_3, event_4, event_5, event_6, event_7] }
-  end
+  let(:events_body) { { 'data' => [event_1, event_2, event_3, event_4, event_5, event_6, event_7] } }
+  let(:most_recent_event_body) { { 'data' => [event_1] } }
   let(:events_response) { Clever::Response.new(stub(body: events_body, status: status)) }
+  let(:most_recent_event_response) { Clever::Response.new(stub(body: most_recent_event_body, status: status)) }
 end

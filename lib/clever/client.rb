@@ -38,6 +38,15 @@ module Clever
       response
     end
 
+    def most_recent_event
+      authenticate
+
+      endpoint = "#{Clever::EVENTS_ENDPOINT}?ending_before=last&limit=1"
+
+      event = @connection.execute(endpoint).body[0]
+      Types::Event.new(event['data'])
+    end
+
     def events(starting_after)
       authenticate
 

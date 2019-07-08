@@ -438,6 +438,39 @@ RSpec.describe Clever::Client do
       end
     end
 
+    describe 'most_recent_event' do
+      before do
+        client.connection.expects(:execute)
+          .with("#{Clever::EVENTS_ENDPOINT}?ending_before=last&limit=1")
+          .returns(most_recent_event_response)
+      end
+
+      context 'when event is a type with a mapping' do
+        it 'returns the event properly' do
+          response = client.most_recent_event
+          expect(response).to be_a(Clever::Types::Event)
+          expect(response.provider).to eq('clever')
+          expect(response.uid).to eq(event_1['data']['id'])
+          expect(response.type).to eq('students')
+          expect(response.action).to eq('created')
+          expect(response.object).to be_a(Clever::Types::Student)
+        end
+      end
+
+      context 'when event is a type without a mapping' do
+        let(:most_recent_event_body) { { 'data' => [event_7] } }
+        it 'returns an event with a nil object' do
+          response = client.most_recent_event
+          expect(response).to be_a(Clever::Types::Event)
+          expect(response.provider).to eq('clever')
+          expect(response.uid).to eq(event_7['data']['id'])
+          expect(response.type).to eq('studentcontacts')
+          expect(response.action).to eq('created')
+          expect(response.object).to be_nil
+        end
+      end
+    end
+
     describe 'events' do
       let(:starting_after) { '12345' }
       before do

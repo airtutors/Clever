@@ -22,7 +22,7 @@ module Clever
       def initialize(attributes = {}, *)
         @uid           = attributes['id']
         @type, @action = attributes['type'].split('.')
-        @object        = TYPE_MAP[@type].new(attributes['data']['object'])
+        @object        = TYPE_MAP[@type]&.new(attributes['data']['object'])
         @provider      = 'clever'
       end
     end
