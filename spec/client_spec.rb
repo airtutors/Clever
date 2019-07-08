@@ -469,6 +469,13 @@ RSpec.describe Clever::Client do
           expect(response.object).to be_nil
         end
       end
+
+      context 'when no events are present' do
+        let(:most_recent_event_body) { { 'data' => [] } }
+        it 'returns nil' do
+          expect(client.most_recent_event).to be_nil
+        end
+      end
     end
 
     describe 'events' do
@@ -479,31 +486,39 @@ RSpec.describe Clever::Client do
           .returns(events_response)
       end
 
+      context 'when no events present' do
+        let(:events_body) { { 'data' => [] } }
+        it 'returns an empty array' do
+          expect(client.events(starting_after)).to eq([])
+        end
+      end
 
-      it 'only returns the desired event types' do
-        response = client.events(starting_after)
-        expect(response.length).to eq(3)
+      context 'when events present' do
+        it 'only returns the desired event types' do
+          response = client.events(starting_after)
+          expect(response.length).to eq(3)
 
-        student_created_response = response[0]
-        teacher_updated_response = response[1]
-        section_deleted_response = response[2]
+          student_created_response = response[0]
+          teacher_updated_response = response[1]
+          section_deleted_response = response[2]
 
-        expect(student_created_response.uid).to eq(event_1['data']['id'])
-        expect(student_created_response.type).to eq('students')
-        expect(student_created_response.action).to eq('created')
-        expect(student_created_response.provider).to eq('clever')
+          expect(student_created_response.uid).to eq(event_1['data']['id'])
+          expect(student_created_response.type).to eq('students')
+          expect(student_created_response.action).to eq('created')
+          expect(student_created_response.provider).to eq('clever')
 
-        expect(teacher_updated_response.uid).to eq(event_2['data']['id'])
-        expect(teacher_updated_response.type).to eq('teachers')
-        expect(teacher_updated_response.action).to eq('updated')
-        expect(teacher_updated_response.provider).to eq('clever')
+          expect(teacher_updated_response.uid).to eq(event_2['data']['id'])
+          expect(teacher_updated_response.type).to eq('teachers')
+          expect(teacher_updated_response.action).to eq('updated')
+          expect(teacher_updated_response.provider).to eq('clever')
 
-        expect(section_deleted_response.uid).to eq(event_3['data']['id'])
-        expect(section_deleted_response.type).to eq('sections')
-        expect(section_deleted_response.action).to eq('deleted')
-        expect(section_deleted_response.provider).to eq('clever')
+          expect(section_deleted_response.uid).to eq(event_3['data']['id'])
+          expect(section_deleted_response.type).to eq('sections')
+          expect(section_deleted_response.action).to eq('deleted')
+          expect(section_deleted_response.provider).to eq('clever')
 
-        expect(response.map(&:type).all? { |type| Clever::EVENT_TYPES.include?(type) }).to eq(true)
+          expect(response.map(&:type).all? { |type| Clever::EVENT_TYPES.include?(type) }).to eq(true)
+        end
       end
     end
   end

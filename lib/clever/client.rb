@@ -44,7 +44,7 @@ module Clever
       endpoint = "#{Clever::EVENTS_ENDPOINT}?ending_before=last&limit=1"
 
       event = @connection.execute(endpoint).body[0]
-      Types::Event.new(event['data'])
+      Types::Event.new(event['data']) if event
     end
 
     def events(starting_after)
