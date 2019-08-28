@@ -65,7 +65,7 @@ module Clever
 
         return records if record_uids.empty?
 
-        records.select { |record| record_uids.include?(record.uid) }
+        records.select { |record| record_uids.to_set.include?(record.uid) }
       end
     end
 
@@ -109,7 +109,7 @@ module Clever
 
     def parse_enrollments(classroom_uids, sections)
       sections.each_with_object(student: [], teacher: []) do |section, enrollments|
-        next if classroom_uids.any? && !classroom_uids.include?(section.uid)
+        next if classroom_uids.any? && !classroom_uids.to_set.include?(section.uid)
 
         parse_student_enrollments!(section, enrollments)
         parse_teacher_enrollments!(section, enrollments)
