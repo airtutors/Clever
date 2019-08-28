@@ -163,7 +163,7 @@ RSpec.describe Clever::Client do
 
       context 'with uids passed in' do
         it 'authenticates and returns students whose uids have been passed in' do
-          response = client.students(student_1['data']['id'])
+          response = client.students([student_1['data']['id']])
 
           expect(response.length).to eq(1)
 
@@ -267,7 +267,7 @@ RSpec.describe Clever::Client do
 
       context 'with uids passed in' do
         it 'authenticates and returns students whose uids have been passed in' do
-          response = client.teachers(teacher_1['data']['id'])
+          response = client.teachers([teacher_1['data']['id']])
           expect(client.app_token).to eq(app_token)
 
           expect(response.length).to eq(1)
