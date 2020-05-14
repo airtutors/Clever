@@ -31,7 +31,7 @@ RSpec.describe Clever::Connection do
       expect(conn.builder.handlers).to eq(
         [
           FaradayMiddleware::EncodeJson, Faraday::Response::Logger,
-          FaradayMiddleware::ParseJson, Faraday::Adapter::NetHttp
+          FaradayMiddleware::ParseJson
         ]
       )
     end
