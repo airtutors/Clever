@@ -23,7 +23,7 @@ module Clever
 
       response = tokens
 
-      fail ConnectionError unless response.success?
+      fail ConnectionError, response.raw_body unless response.success?
 
       set_token(response, app_id)
     end
