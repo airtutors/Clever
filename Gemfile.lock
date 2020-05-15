@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    clever (1.2.4)
+    clever (2.0.0)
       faraday
       faraday_middleware
 
@@ -75,7 +75,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.16)
+  bundler (~> 2.1.4)
   clever!
   mocha
   pry
@@ -87,4 +87,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-   1.16.4
+   2.1.4
