@@ -54,7 +54,7 @@ module Clever
       Paginator.fetch(connection, endpoint, :get, Types::Event, client: self).force
     end
 
-    %i(students courses teachers sections).each do |record_type|
+    %i(students courses teachers sections terms).each do |record_type|
       define_method(record_type) do |record_uids = []|
         authenticate
 
@@ -75,14 +75,20 @@ module Clever
 
       fetched_courses = courses
 
+      terms_hash = terms.each_with_object({}) { |term, terms| terms[term.uid] = term  }
+
       sections.map do |section|
         course = fetched_courses.find { |clever_course| clever_course.uid == section.course }
+        term = terms_hash[section.term_id]
         Types::Classroom.new(
           'id' => section.uid,
           'name' => section.name,
           'period' => section.period,
           'course_number' => course&.number,
-          'grades' => section.grades
+          'grades' => section.grades,
+          'term_name' => term&.name,
+          'term_start_date' => term&.start_date,
+          'term_end_date' => term&.end_date
         )
       end
     end

@@ -349,11 +349,35 @@ RSpec.describe Clever::Client do
       end
     end
 
+    describe 'terms' do
+      before do
+        client.connection.expects(:execute)
+          .with(Clever::TERMS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
+          .returns(terms_response)
+      end
+
+      it 'authenticates and returns terms for district' do
+        response = client.terms
+        expect(client.app_token).to eq(app_token)
+
+        first_term = response[0]
+
+        expect(first_term.class).to eq(Clever::Types::Term)
+        expect(first_term.uid).to eq('1')
+        expect(first_term.name).to eq('term name')
+        expect(first_term.start_date).to eq('2019-08-21')
+        expect(first_term.end_date).to eq('2020-01-10')
+      end
+    end
+
     describe 'classrooms' do
       before do
         client.connection.expects(:execute)
           .with(Clever::COURSES_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
           .returns(courses_response)
+        client.connection.expects(:execute)
+          .with(Clever::TERMS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
+          .returns(terms_response)
         client.connection.expects(:execute)
           .with(Clever::SECTIONS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
           .returns(sections_response)
@@ -372,6 +396,9 @@ RSpec.describe Clever::Client do
         expect(first_classroom.period).to eq(section_1['data']['period'])
         expect(first_classroom.course_number).to eq(course_1['data']['number'])
         expect(first_classroom.grades).to eq(section_1['data']['grade'])
+        expect(first_classroom.term_name).to eq('term name')
+        expect(first_classroom.term_start_date).to eq('2019-08-21')
+        expect(first_classroom.term_end_date).to eq('2020-01-10')
         expect(first_classroom.provider).to eq('clever')
 
         expect(second_classroom.class).to eq(Clever::Types::Classroom)

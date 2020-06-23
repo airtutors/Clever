@@ -10,6 +10,7 @@ module Clever
                   :grades,
                   :students,
                   :teachers,
+                  :term_id,
                   :provider
 
       def initialize(attributes = {}, *)
@@ -20,6 +21,7 @@ module Clever
         @grades   = attributes['grade']
         @students = attributes['students']
         @teachers = attributes['teachers']
+        @term_id  = attributes['term_id']
         @provider = 'clever'
       end
     end

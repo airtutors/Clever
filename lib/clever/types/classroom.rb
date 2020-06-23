@@ -8,15 +8,21 @@ module Clever
                   :period,
                   :course_number,
                   :grades,
-                  :provider
+                  :provider,
+                  :term_name,
+                  :term_start_date,
+                  :term_end_date
 
       def initialize(attributes = {}, *)
-        @uid           = attributes['id']
-        @name          = attributes['name']
-        @period        = attributes['period']
-        @course_number = attributes['course_number']
-        @grades        = attributes['grades']
-        @provider      = 'clever'
+        @uid             = attributes['id']
+        @name            = attributes['name']
+        @period          = attributes['period']
+        @course_number   = attributes['course_number']
+        @grades          = attributes['grades']
+        @term_name       = attributes['term_name']
+        @term_start_date = attributes['term_start_date']
+        @term_end_date   = attributes['term_end_date']
+        @provider        = 'clever'
       end
     end
   end

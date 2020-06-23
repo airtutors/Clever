@@ -120,6 +120,21 @@ RSpec.shared_context 'api responses' do
   let(:teachers_body) { { 'data' => [teacher_1, teacher_2] } }
   let(:teachers_response) { Clever::Response.new(stub(body: teachers_body, status: status)) }
 
+  #################################### TERMS RESPONSE ####################################
+
+  let(:term) do
+    {
+      'data' => {
+        'id' => '1',
+        'name' => 'term name',
+        'start_date' => '2019-08-21',
+        'end_date' => '2020-01-10'
+      }
+    }
+  end
+
+  let(:terms_response) { Clever::Response.new(stub(body: { 'data' => [term] }, status: status)) }
+
   #################################### SECTIONS RESPONSE ####################################
   let(:section_1) do
     {
@@ -130,7 +145,8 @@ RSpec.shared_context 'api responses' do
         'grade' => '5',
         'course' => '1',
         'teachers' => %w(5 2),
-        'students' => %w(6 7 8)
+        'students' => %w(6 7 8),
+        'term_id' => '1'
       }
     }
   end
@@ -143,7 +159,8 @@ RSpec.shared_context 'api responses' do
         'grade' => '1',
         'course' => '1000',
         'teachers' => ['6'],
-        'students' => %w(1 2 3)
+        'students' => %w(1 2 3),
+        'term_id' => '1'
       }
     }
   end
@@ -156,7 +173,8 @@ RSpec.shared_context 'api responses' do
         'grade' => '1',
         'course' => '1000',
         'teachers' => ['6'],
-        'students' => %w(1 2 3)
+        'students' => %w(1 2 3),
+        'term_id' => '1'
       }
     }
   end
