@@ -86,6 +86,7 @@ module Clever
           'period' => section.period,
           'course_number' => course&.number,
           'grades' => section.grades,
+          'subjects' => section.subjects,
           'term_name' => term&.name,
           'term_start_date' => term&.start_date,
           'term_end_date' => term&.end_date

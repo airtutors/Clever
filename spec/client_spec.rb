@@ -320,7 +320,7 @@ RSpec.describe Clever::Client do
           .returns(sections_response)
       end
 
-      it 'authenticates and returns teachers' do
+      it 'authenticates and returns sections' do
         response = client.sections
         expect(client.app_token).to eq(app_token)
 
@@ -333,6 +333,7 @@ RSpec.describe Clever::Client do
         expect(first_section.grades).to eq(section_1['data']['grade'])
         expect(first_section.period).to eq(section_1['data']['period'])
         expect(first_section.course).to eq(section_1['data']['course'])
+        expect(first_section.subjects).to eq([section_1['data']['subject']])
         expect(first_section.teachers).to eq(section_1['data']['teachers'])
         expect(first_section.students).to eq(section_1['data']['students'])
         expect(first_section.provider).to eq('clever')
@@ -343,6 +344,7 @@ RSpec.describe Clever::Client do
         expect(second_section.grades).to eq(section_2['data']['grade'])
         expect(second_section.period).to eq(section_2['data']['period'])
         expect(second_section.course).to eq(section_2['data']['course'])
+        expect(second_section.subjects).to eq([])
         expect(second_section.teachers).to eq(section_2['data']['teachers'])
         expect(second_section.students).to eq(section_2['data']['students'])
         expect(second_section.provider).to eq('clever')
@@ -396,6 +398,7 @@ RSpec.describe Clever::Client do
         expect(first_classroom.period).to eq(section_1['data']['period'])
         expect(first_classroom.course_number).to eq(course_1['data']['number'])
         expect(first_classroom.grades).to eq(section_1['data']['grade'])
+        expect(first_classroom.subjects).to eq([section_1['data']['subject']])
         expect(first_classroom.term_name).to eq('term name')
         expect(first_classroom.term_start_date).to eq('2019-08-21')
         expect(first_classroom.term_end_date).to eq('2020-01-10')
@@ -407,6 +410,7 @@ RSpec.describe Clever::Client do
         expect(second_classroom.period).to eq(section_2['data']['period'])
         expect(second_classroom.course_number).to eq(nil)
         expect(second_classroom.grades).to eq(section_2['data']['grade'])
+        expect(second_classroom.subjects).to eq([])
         expect(second_classroom.provider).to eq('clever')
       end
     end

@@ -37,14 +37,6 @@ module Clever
 
       private
 
-      def presence(field)
-        field unless blank?(field)
-      end
-
-      def blank?(field)
-        field.nil? || field == ''
-      end
-
       def username_from(username_source)
         return if blank?(username_source)
 

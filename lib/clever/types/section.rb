@@ -8,6 +8,7 @@ module Clever
                   :period,
                   :course,
                   :grades,
+                  :subjects,
                   :students,
                   :teachers,
                   :term_id,
@@ -19,6 +20,7 @@ module Clever
         @period   = attributes['period']
         @course   = attributes['course']
         @grades   = attributes['grade']
+        @subjects = [presence(attributes['subject'])].compact
         @students = attributes['students']
         @teachers = attributes['teachers']
         @term_id  = attributes['term_id']

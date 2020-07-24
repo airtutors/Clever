@@ -10,6 +10,14 @@ module Clever
           variables[key] = value
         end
       end
+
+      def presence(field)
+        field unless blank?(field)
+      end
+
+      def blank?(field)
+        field.nil? || field == ''
+      end
     end
   end
 end
