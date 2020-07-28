@@ -19,7 +19,7 @@ module Clever
         @name     = attributes['name']
         @period   = attributes['period']
         @course   = attributes['course']
-        @grades   = attributes['grade']
+        @grades   = [presence(attributes['grade'])].compact
         @subjects = [presence(attributes['subject'])].compact
         @students = attributes['students']
         @teachers = attributes['teachers']
