@@ -12,19 +12,21 @@ module Clever
                   :students,
                   :teachers,
                   :term_id,
-                  :provider
+                  :provider,
+                  :primary_teacher_uid
 
       def initialize(attributes = {}, *)
-        @uid      = attributes['id']
-        @name     = attributes['name']
-        @period   = attributes['period']
-        @course   = attributes['course']
-        @grades   = [presence(attributes['grade'])].compact
-        @subjects = [presence(attributes['subject'])].compact
-        @students = attributes['students']
-        @teachers = attributes['teachers']
-        @term_id  = attributes['term_id']
-        @provider = 'clever'
+        @uid                 = attributes['id']
+        @name                = attributes['name']
+        @period              = attributes['period']
+        @course              = attributes['course']
+        @grades              = [presence(attributes['grade'])].compact
+        @subjects            = [presence(attributes['subject'])].compact
+        @students            = attributes['students']
+        @teachers            = attributes['teachers']
+        @term_id             =  attributes['term_id']
+        @provider            = 'clever'
+        @primary_teacher_uid = attributes['teacher']
       end
     end
   end

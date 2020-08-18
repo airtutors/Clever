@@ -136,7 +136,8 @@ module Clever
       section.teachers.each do |teacher_uid|
         enrollments[:teacher] << Types::Enrollment.new(
           'classroom_uid' => section.uid,
-          'user_uid' => teacher_uid
+          'user_uid' => teacher_uid,
+          'primary' => section.primary_teacher_uid == teacher_uid
         )
       end
     end

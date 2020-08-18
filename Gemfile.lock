@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    clever (2.2.0)
+    clever (2.3.0)
       faraday
       faraday_middleware
 

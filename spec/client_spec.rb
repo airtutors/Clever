@@ -337,6 +337,7 @@ RSpec.describe Clever::Client do
         expect(first_section.teachers).to eq(section_1['data']['teachers'])
         expect(first_section.students).to eq(section_1['data']['students'])
         expect(first_section.provider).to eq('clever')
+        expect(first_section.primary_teacher_uid).to eq(section_1['data']['teacher'])
 
         expect(second_section.class).to eq(Clever::Types::Section)
         expect(second_section.uid).to eq(section_2['data']['id'])
@@ -348,6 +349,7 @@ RSpec.describe Clever::Client do
         expect(second_section.teachers).to eq(section_2['data']['teachers'])
         expect(second_section.students).to eq(section_2['data']['students'])
         expect(second_section.provider).to eq('clever')
+        expect(second_section.primary_teacher_uid).to eq(section_2['data']['teacher'])
       end
     end
 
@@ -429,19 +431,19 @@ RSpec.describe Clever::Client do
 
           student_enrollments = response[:student].each_with_object({}) do |enrollment, enrollments|
             enrollments[enrollment.classroom_uid] ||= []
-            enrollments[enrollment.classroom_uid] << enrollment.user_uid
+            enrollments[enrollment.classroom_uid] << [enrollment.user_uid, enrollment.primary]
           end
 
           teacher_enrollments = response[:teacher].each_with_object({}) do |enrollment, enrollments|
             enrollments[enrollment.classroom_uid] ||= []
-            enrollments[enrollment.classroom_uid] << enrollment.user_uid
+            enrollments[enrollment.classroom_uid] << [enrollment.user_uid, enrollment.primary]
           end
 
-          expect(student_enrollments['5']).to eq(%w(6 7 8))
-          expect(student_enrollments['20']).to eq(%w(1 2 3))
+          expect(student_enrollments['5']).to contain_exactly(['6', false], ['7', false], ['8', false])
+          expect(student_enrollments['20']).to contain_exactly(['1', false], ['2', false], ['3', false])
 
-          expect(teacher_enrollments['5']).to eq(%w(5 2))
-          expect(teacher_enrollments['20']).to eq(['6'])
+          expect(teacher_enrollments['5']).to contain_exactly(['5', false], ['2', true])
+          expect(teacher_enrollments['20']).to contain_exactly(['6', true])
         end
       end
 

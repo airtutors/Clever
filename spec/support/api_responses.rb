@@ -147,7 +147,8 @@ RSpec.shared_context 'api responses' do
         'course' => '1',
         'teachers' => %w(5 2),
         'students' => %w(6 7 8),
-        'term_id' => '1'
+        'term_id' => '1',
+        'teacher' => '2'
       }
     }
   end
@@ -162,7 +163,8 @@ RSpec.shared_context 'api responses' do
         'course' => '1000',
         'teachers' => ['6'],
         'students' => %w(1 2 3),
-        'term_id' => '1'
+        'term_id' => '1',
+        'teacher' => '6'
       }
     }
   end
@@ -176,7 +178,8 @@ RSpec.shared_context 'api responses' do
         'course' => '1000',
         'teachers' => ['6'],
         'students' => %w(1 2 3),
-        'term_id' => '1'
+        'term_id' => '1',
+        'teacher' => '6'
       }
     }
   end
