@@ -7,13 +7,15 @@ RSpec.shared_context 'api responses' do
   let(:app_id) { '5800e1c5e16c4230146fce0' }
   let(:status) { 200 }
   let(:username_source) { nil }
+  let(:staff_username_source) { 'district_username' }
 
   let(:client) do
     Clever::Client.configure do |config|
-      config.app_id          = app_id
-      config.vendor_key      = vendor_key
-      config.vendor_secret   = vendor_secret
-      config.username_source = username_source
+      config.app_id                = app_id
+      config.vendor_key            = vendor_key
+      config.vendor_secret         = vendor_secret
+      config.username_source       = username_source
+      config.staff_username_source = staff_username_source
     end
   end
 
@@ -104,7 +106,8 @@ RSpec.shared_context 'api responses' do
       'data' => {
         'id' => '1',
         'email' => '12345',
-        'name' => { 'first' => 'jill', 'last' => 'epstein' }
+        'name' => { 'first' => 'jill', 'last' => 'epstein' },
+        'credentials' => { 'district_username' => 'epstein.jill' }
       }
     }
   end
