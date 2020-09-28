@@ -611,13 +611,11 @@ RSpec.describe Clever::Client do
         teacher = Clever::Types::Teacher.new(teacher_1['data'])
         expect(teacher.to_h).to eq(
           uid: teacher_1['data']['id'],
-          district_username: teacher_1['data']['credentials']['district_username'],
           username: nil, # username is nil because there is no client
           email: teacher_1['data']['email'],
           first_name: teacher_1['data']['name']['first'],
           last_name: teacher_1['data']['name']['last'],
           provider: 'clever',
-          sis_id: nil,
         )
       end
     end

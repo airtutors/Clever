@@ -26,6 +26,17 @@ module Clever
         @username ||= presence(username_from(username_source))
       end
 
+      def to_h
+        {
+          uid: @uid,
+          email: @email,
+          first_name: @first_name,
+          last_name: @last_name,
+          username: @username,
+          provider: @provider
+        }
+      end
+
       private
 
       def username_from(username_source)
