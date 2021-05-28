@@ -7,17 +7,19 @@ module Clever
                   :email,
                   :first_name,
                   :last_name,
-                  :provider
+                  :provider,
+                  :legacy_id
 
       def initialize(attributes = {}, *, client: nil)
-        @uid        = attributes['id']
-        @email      = attributes['email']
-        @first_name = attributes['name']['first']
-        @last_name  = attributes['name']['last']
         @district_username = attributes.dig('credentials', 'district_username')
+        @email             = attributes['email']
+        @first_name        = attributes['name']['first']
+        @last_name         = attributes['name']['last']
+        @legacy_id         = attributes.dig('roles', 'teacher', 'legacy_id')
+        @provider          = 'clever'
         @sis_id            = attributes['sis_id']
-        @username   = username(client)
-        @provider   = 'clever'
+        @uid               = attributes['id']
+        @username          = username(client)
       end
 
       def username(client = nil)
