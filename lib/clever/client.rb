@@ -54,7 +54,7 @@ module Clever
       Paginator.fetch(connection, endpoint, :get, Types::Event, client: self).force
     end
 
-    %i(students courses teachers sections terms).each do |record_type|
+    %i(students courses sections terms).each do |record_type|
       define_method(record_type) do |record_uids = []|
         authenticate
 
@@ -67,6 +67,19 @@ module Clever
 
         records.select { |record| record_uids.to_set.include?(record.uid) }
       end
+    end
+
+    def teachers(record_uids = [])
+      authenticate
+
+      teachers = Paginator.fetch(connection, Clever::TEACHERS_ENDPOINT, :get, Types::Teacher, client: self).force
+      admins = Paginator.fetch(connection, Clever::ADMINS_ENDPOINT, :get, Types::Admin, client: self).force
+
+      records = (admins + teachers).uniq(&:uid)
+
+      return records if record_uids.empty?
+
+      records.select { |record| record_uids.to_set.include?(record.uid) }
     end
 
     # discard params to make the API behave the same as the one roster gem

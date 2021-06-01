@@ -107,7 +107,7 @@ RSpec.shared_context 'api responses' do
         'id' => '1',
         'email' => '12345',
         'name' => { 'first' => 'jill', 'last' => 'epstein' },
-        'credentials' => { 'district_username' => 'epstein.jill' }
+        'roles' => { 'teacher' => { 'credentials' => { 'district_username' => 'epstein.jill' } } }
       }
     }
   end
@@ -120,8 +120,30 @@ RSpec.shared_context 'api responses' do
       }
     }
   end
+
+  let(:admin_1) do
+    {
+      'data' => {
+        'id' => '11',
+        'email' => '12345',
+        'name' => { 'first' => 'melvin', 'last' => 'epstein' },
+        'credentials' => { 'district_username' => 'epstein.melvin' }
+      }
+    }
+  end
+  let(:admin_2) do
+    {
+      'data' => {
+        'id' => '19',
+        'email' => '12345',
+        'name' => { 'first' => 'joe', 'last' => 'piper' }
+      }
+    }
+  end
   let(:teachers_body) { { 'data' => [teacher_1, teacher_2] } }
+  let(:admins_body) { { 'data' => [admin_1, admin_2] } }
   let(:teachers_response) { Clever::Response.new(stub(body: teachers_body, status: status)) }
+  let(:admins_response) { Clever::Response.new(stub(body: admins_body, status: status)) }
 
   #################################### TERMS RESPONSE ####################################
 
