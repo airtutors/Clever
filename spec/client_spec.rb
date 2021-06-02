@@ -232,12 +232,8 @@ RSpec.describe Clever::Client do
       end
     end
 
-    describe 'teachers' do
+    describe 'admins' do
       before do
-        client.connection.expects(:execute)
-          .with(Clever::TEACHERS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
-          .returns(teachers_response)
-
         client.connection.expects(:execute)
           .with(Clever::ADMINS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
           .returns(admins_response)
@@ -245,13 +241,118 @@ RSpec.describe Clever::Client do
 
       context 'without uids passed in' do
         it 'authenticates and returns teachers' do
+          response = client.admins
+          expect(client.app_token).to eq(app_token)
+
+          expect(response.length).to eq(2)
+
+          first_admin  = response[0]
+          second_admin = response[1]
+
+          expect(first_admin.class).to eq(Clever::Types::Admin)
+          expect(first_admin.uid).to eq(admin_1['data']['id'])
+          expect(first_admin.email).to eq(admin_1['data']['email'])
+          expect(first_admin.first_name).to eq(admin_1['data']['name']['first'])
+          expect(first_admin.last_name).to eq(admin_1['data']['name']['last'])
+          expect(first_admin.provider).to eq('clever')
+          expect(first_admin.role).to eq('admin')
+
+          expect(second_admin.class).to eq(Clever::Types::Admin)
+          expect(second_admin.uid).to eq(admin_2['data']['id'])
+          expect(second_admin.email).to eq(admin_2['data']['email'])
+          expect(second_admin.first_name).to eq(admin_2['data']['name']['first'])
+          expect(second_admin.last_name).to eq(admin_2['data']['name']['last'])
+          expect(second_admin.provider).to eq('clever')
+          expect(second_admin.role).to eq('admin')
+        end
+      end
+
+      context 'with uids passed in' do
+        it 'authenticates and returns students whose uids have been passed in' do
+          response = client.admins([admin_1['data']['id']])
+          expect(client.app_token).to eq(app_token)
+
+          expect(response.length).to eq(1)
+
+          admin = response[0]
+
+          expect(admin.class).to eq(Clever::Types::Admin)
+          expect(admin.uid).to eq(admin_1['data']['id'])
+          expect(admin.email).to eq(admin_1['data']['email'])
+          expect(admin.first_name).to eq(admin_1['data']['name']['first'])
+          expect(admin.last_name).to eq(admin_1['data']['name']['last'])
+          expect(admin.provider).to eq('clever')
+          expect(admin.role).to eq('admin')
+        end
+      end
+
+      context 'with username source' do
+        context 'district_username' do
+          let(:staff_username_source) { 'district_username' }
+
+          it 'returns the proper usernames' do
+            response = client.admins
+
+            expect(response.length).to eq(2)
+
+            first_admin  = response[0]
+            second_admin = response[1]
+
+            expect(first_admin.username).to eq(admin_1['data']['roles']['district_admin']['credentials']['district_username'])
+            expect(second_admin.username).to be_nil
+          end
+        end
+
+        context 'district_username' do
+          let(:staff_username_source) { 'email' }
+
+          it 'returns the proper usernames' do
+            response = client.admins
+
+            expect(response.length).to eq(2)
+
+            first_admin  = response[0]
+            second_admin = response[1]
+
+            expect(first_admin.username).to eq(admin_1['data']['email'])
+            expect(second_admin.username).to eq(admin_2['data']['email'])
+          end
+        end
+
+        context 'district_username' do
+          let(:staff_username_source) { 'sis_id' }
+
+          it 'returns the proper usernames' do
+            response = client.admins
+
+            expect(response.length).to eq(2)
+
+            first_admin  = response[0]
+            second_admin = response[1]
+
+            expect(first_admin.username).to eq(admin_1['data']['sis_id'])
+            expect(second_admin.username).to eq(admin_2['data']['sis_id'])
+          end
+        end
+      end
+    end
+
+    describe 'teachers' do
+      before do
+        client.connection.expects(:execute)
+          .with(Clever::TEACHERS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
+          .returns(teachers_response)
+      end
+
+      context 'without uids passed in' do
+        it 'authenticates and returns teachers' do
           response = client.teachers
           expect(client.app_token).to eq(app_token)
 
-          expect(response.length).to eq(4)
+          expect(response.length).to eq(2)
 
-          first_teacher  = response.select { |object| object.role == 'teacher' }[0]
-          second_teacher = response.select { |object| object.role == 'teacher' }[1]
+          first_teacher  = response[0]
+          second_teacher = response[1]
 
           expect(first_teacher.class).to eq(Clever::Types::Teacher)
           expect(first_teacher.uid).to eq(teacher_1['data']['id'])
@@ -259,6 +360,7 @@ RSpec.describe Clever::Client do
           expect(first_teacher.first_name).to eq(teacher_1['data']['name']['first'])
           expect(first_teacher.last_name).to eq(teacher_1['data']['name']['last'])
           expect(first_teacher.provider).to eq('clever')
+          expect(first_teacher.role).to eq('teacher')
 
           expect(second_teacher.class).to eq(Clever::Types::Teacher)
           expect(second_teacher.uid).to eq(teacher_2['data']['id'])
@@ -266,6 +368,7 @@ RSpec.describe Clever::Client do
           expect(second_teacher.first_name).to eq(teacher_2['data']['name']['first'])
           expect(second_teacher.last_name).to eq(teacher_2['data']['name']['last'])
           expect(second_teacher.provider).to eq('clever')
+          expect(second_teacher.role).to eq('teacher')
         end
       end
 
@@ -284,6 +387,7 @@ RSpec.describe Clever::Client do
           expect(teacher.first_name).to eq(teacher_1['data']['name']['first'])
           expect(teacher.last_name).to eq(teacher_1['data']['name']['last'])
           expect(teacher.provider).to eq('clever')
+          expect(teacher.role).to eq('teacher')
         end
       end
 
@@ -294,10 +398,10 @@ RSpec.describe Clever::Client do
           it 'returns the proper usernames' do
             response = client.teachers
 
-            expect(response.length).to eq(4)
+            expect(response.length).to eq(2)
 
-            first_teacher  = response.select { |object| object.role == 'teacher' }[0]
-            second_teacher = response.select { |object| object.role == 'teacher' }[1]
+            first_teacher  = response[0]
+            second_teacher = response[1]
 
             expect(first_teacher.username).to eq(teacher_1['data']['roles']['teacher']['credentials']['district_username'])
             expect(second_teacher.username).to be_nil
@@ -310,10 +414,10 @@ RSpec.describe Clever::Client do
           it 'returns the proper usernames' do
             response = client.teachers
 
-            expect(response.length).to eq(4)
+            expect(response.length).to eq(2)
 
-            first_teacher  = response.select { |object| object.role == 'teacher' }[0]
-            second_teacher = response.select { |object| object.role == 'teacher' }[1]
+            first_teacher  = response[0]
+            second_teacher = response[1]
 
             expect(first_teacher.username).to eq(teacher_1['data']['email'])
             expect(second_teacher.username).to eq(teacher_2['data']['email'])
@@ -326,10 +430,10 @@ RSpec.describe Clever::Client do
           it 'returns the proper usernames' do
             response = client.teachers
 
-            expect(response.length).to eq(4)
+            expect(response.length).to eq(2)
 
-            first_teacher  = response.select { |object| object.role == 'teacher' }[0]
-            second_teacher = response.select { |object| object.role == 'teacher' }[1]
+            first_teacher  = response[0]
+            second_teacher = response[1]
 
             expect(first_teacher.username).to eq(teacher_1['data']['sis_id'])
             expect(second_teacher.username).to eq(teacher_2['data']['sis_id'])
