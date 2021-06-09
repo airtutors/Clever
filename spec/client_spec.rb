@@ -235,8 +235,12 @@ RSpec.describe Clever::Client do
     describe 'admins' do
       before do
         client.connection.expects(:execute)
-          .with(Clever::ADMINS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
-          .returns(admins_response)
+          .with(Clever::DISTRICT_ADMINS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
+          .returns(district_admins_response)
+
+        client.connection.expects(:execute)
+          .with(Clever::SCHOOL_ADMINS_ENDPOINT, :get, limit: Clever::PAGE_LIMIT)
+          .returns(school_admins_response)
       end
 
       context 'without uids passed in' do
@@ -249,19 +253,19 @@ RSpec.describe Clever::Client do
           first_admin  = response[0]
           second_admin = response[1]
 
-          expect(first_admin.class).to eq(Clever::Types::Admin)
-          expect(first_admin.uid).to eq(admin_1['data']['id'])
-          expect(first_admin.email).to eq(admin_1['data']['email'])
-          expect(first_admin.first_name).to eq(admin_1['data']['name']['first'])
-          expect(first_admin.last_name).to eq(admin_1['data']['name']['last'])
+          expect(first_admin.class).to eq(Clever::Types::DistrictAdmin)
+          expect(first_admin.uid).to eq(district_admin_1['data']['id'])
+          expect(first_admin.email).to eq(district_admin_1['data']['email'])
+          expect(first_admin.first_name).to eq(district_admin_1['data']['name']['first'])
+          expect(first_admin.last_name).to eq(district_admin_1['data']['name']['last'])
           expect(first_admin.provider).to eq('clever')
           expect(first_admin.role).to eq('admin')
 
-          expect(second_admin.class).to eq(Clever::Types::Admin)
-          expect(second_admin.uid).to eq(admin_2['data']['id'])
-          expect(second_admin.email).to eq(admin_2['data']['email'])
-          expect(second_admin.first_name).to eq(admin_2['data']['name']['first'])
-          expect(second_admin.last_name).to eq(admin_2['data']['name']['last'])
+          expect(second_admin.class).to eq(Clever::Types::DistrictAdmin)
+          expect(second_admin.uid).to eq(district_admin_2['data']['id'])
+          expect(second_admin.email).to eq(district_admin_2['data']['email'])
+          expect(second_admin.first_name).to eq(district_admin_2['data']['name']['first'])
+          expect(second_admin.last_name).to eq(district_admin_2['data']['name']['last'])
           expect(second_admin.provider).to eq('clever')
           expect(second_admin.role).to eq('admin')
         end
@@ -269,18 +273,18 @@ RSpec.describe Clever::Client do
 
       context 'with uids passed in' do
         it 'authenticates and returns students whose uids have been passed in' do
-          response = client.admins([admin_1['data']['id']])
+          response = client.admins([district_admin_1['data']['id']])
           expect(client.app_token).to eq(app_token)
 
           expect(response.length).to eq(1)
 
           admin = response[0]
 
-          expect(admin.class).to eq(Clever::Types::Admin)
-          expect(admin.uid).to eq(admin_1['data']['id'])
-          expect(admin.email).to eq(admin_1['data']['email'])
-          expect(admin.first_name).to eq(admin_1['data']['name']['first'])
-          expect(admin.last_name).to eq(admin_1['data']['name']['last'])
+          expect(admin.class).to eq(Clever::Types::DistrictAdmin)
+          expect(admin.uid).to eq(district_admin_1['data']['id'])
+          expect(admin.email).to eq(district_admin_1['data']['email'])
+          expect(admin.first_name).to eq(district_admin_1['data']['name']['first'])
+          expect(admin.last_name).to eq(district_admin_1['data']['name']['last'])
           expect(admin.provider).to eq('clever')
           expect(admin.role).to eq('admin')
         end
@@ -298,7 +302,7 @@ RSpec.describe Clever::Client do
             first_admin  = response[0]
             second_admin = response[1]
 
-            expect(first_admin.username).to eq(admin_1['data']['roles']['district_admin']['credentials']['district_username'])
+            expect(first_admin.username).to eq(district_admin_1['data']['roles']['district_admin']['credentials']['district_username'])
             expect(second_admin.username).to be_nil
           end
         end
@@ -314,8 +318,8 @@ RSpec.describe Clever::Client do
             first_admin  = response[0]
             second_admin = response[1]
 
-            expect(first_admin.username).to eq(admin_1['data']['email'])
-            expect(second_admin.username).to eq(admin_2['data']['email'])
+            expect(first_admin.username).to eq(district_admin_1['data']['email'])
+            expect(second_admin.username).to eq(district_admin_2['data']['email'])
           end
         end
 
@@ -330,8 +334,8 @@ RSpec.describe Clever::Client do
             first_admin  = response[0]
             second_admin = response[1]
 
-            expect(first_admin.username).to eq(admin_1['data']['sis_id'])
-            expect(second_admin.username).to eq(admin_2['data']['sis_id'])
+            expect(first_admin.username).to eq(district_admin_1['data']['sis_id'])
+            expect(second_admin.username).to eq(district_admin_2['data']['sis_id'])
           end
         end
       end

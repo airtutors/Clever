@@ -8,8 +8,8 @@ module Clever
     attr_reader :api_url, :tokens_endpoint
 
     def initialize
-      @api_url           = API_URL
-      @tokens_endpoint   = TOKENS_ENDPOINT
+      @api_url         = API_URL
+      @tokens_endpoint = TOKENS_ENDPOINT
     end
 
     def self.configure
@@ -54,7 +54,7 @@ module Clever
       Paginator.fetch(connection, endpoint, :get, Types::Event, client: self).force
     end
 
-    %i(students courses teachers admins sections terms).each do |record_type|
+    %i(students courses teachers sections terms).each do |record_type|
       define_method(record_type) do |record_uids = []|
         authenticate
 
@@ -67,6 +67,22 @@ module Clever
 
         records.select { |record| record_uids.to_set.include?(record.uid) }
       end
+    end
+
+    def admins(record_uids = [])
+      authenticate
+
+      district_admins = Paginator.fetch(connection, Clever::DISTRICT_ADMINS_ENDPOINT,
+                                        :get, Types::DistrictAdmin, client: self).force
+
+      school_admins = Paginator.fetch(connection, Clever::SCHOOL_ADMINS_ENDPOINT,
+                                      :get, Types::SchoolAdmin, client: self).force
+
+      admins = (district_admins + school_admins).uniq(&:uid)
+
+      return admins if record_uids.empty?
+
+      admins.select { |record| record_uids.to_set.include?(record.uid) }
     end
 
     # discard params to make the API behave the same as the one roster gem

@@ -2,7 +2,7 @@
 
 module Clever
   module Types
-    class Admin < Teacher
+    class DistrictAdmin < Teacher
       def initialize(attributes = {}, *, client: nil)
         @district_username = attributes.dig('roles', 'district_admin', 'credentials', 'district_username')
         @email             = attributes['email']

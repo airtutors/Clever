@@ -121,7 +121,27 @@ RSpec.shared_context 'api responses' do
     }
   end
 
-  let(:admin_1) do
+  let(:school_admin_1) do
+    {
+      'data' => {
+        'id' => '11',
+        'email' => '12345',
+        'name' => { 'first' => 'joe', 'last' => 'epstein' },
+        'roles' => { 'staff' => { 'credentials' => { 'district_username' => 'epstein.melvin' } } }
+      }
+    }
+  end
+  let(:school_admin_2) do
+    {
+      'data' => {
+        'id' => '19',
+        'email' => '12345',
+        'name' => { 'first' => 'cool', 'last' => 'piper' }
+      }
+    }
+  end
+
+  let(:district_admin_1) do
     {
       'data' => {
         'id' => '11',
@@ -131,7 +151,7 @@ RSpec.shared_context 'api responses' do
       }
     }
   end
-  let(:admin_2) do
+  let(:district_admin_2) do
     {
       'data' => {
         'id' => '19',
@@ -140,10 +160,13 @@ RSpec.shared_context 'api responses' do
       }
     }
   end
+
   let(:teachers_body) { { 'data' => [teacher_1, teacher_2] } }
-  let(:admins_body) { { 'data' => [admin_1, admin_2] } }
+  let(:school_admins_body) { { 'data' => [school_admin_1, school_admin_2] } }
+  let(:district_admins_body) { { 'data' => [district_admin_1, district_admin_2] } }
   let(:teachers_response) { Clever::Response.new(stub(body: teachers_body, status: status)) }
-  let(:admins_response) { Clever::Response.new(stub(body: admins_body, status: status)) }
+  let(:school_admins_response) { Clever::Response.new(stub(body: school_admins_body, status: status)) }
+  let(:district_admins_response) { Clever::Response.new(stub(body: district_admins_body, status: status)) }
 
   #################################### TERMS RESPONSE ####################################
 
