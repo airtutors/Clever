@@ -37,7 +37,8 @@ module Clever
           first_name: @first_name,
           last_name: @last_name,
           username: @username,
-          provider: @provider
+          provider: @provider,
+          legacy_id: @legacy_id
         }
       end
 

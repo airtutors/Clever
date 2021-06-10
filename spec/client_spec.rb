@@ -728,6 +728,7 @@ RSpec.describe Clever::Client do
           first_name: teacher_1['data']['name']['first'],
           last_name: teacher_1['data']['name']['last'],
           provider: 'clever',
+          legacy_id: 'legacy_id'
         )
       end
     end

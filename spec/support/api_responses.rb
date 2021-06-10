@@ -107,7 +107,12 @@ RSpec.shared_context 'api responses' do
         'id' => '1',
         'email' => '12345',
         'name' => { 'first' => 'jill', 'last' => 'epstein' },
-        'roles' => { 'teacher' => { 'credentials' => { 'district_username' => 'epstein.jill' } } }
+        'roles' => {
+          'teacher' => {
+            'legacy_id' => 'legacy_id',
+            'credentials' => { 'district_username' => 'epstein.jill' }
+          }
+        }
       }
     }
   end
