@@ -114,6 +114,41 @@ RSpec.describe Clever::Client do
     end
   end
 
+  describe 'user SSO' do
+    describe 'user_uid_for_code' do
+      let(:code) { '1234' }
+
+      before do
+        client.connection.expects(:execute)
+              .with(Clever::USER_TOKEN_ENDPOINT, :post, nil,
+                    { code: code, grant_type: 'authorization_code', redirect_uri: nil })
+              .returns(user_token_response)
+      end
+
+      context 'failed request' do
+        let(:user_token_body) { nil }
+        let(:status) { 401 }
+
+        it 'raises error' do
+          expect { client.user_uid_for_code(code) }.to raise_error(Clever::ConnectionError)
+        end
+      end
+
+      context 'when the request is successful' do
+        before do
+          client.connection.expects(:set_token).with(app_token)
+          client.connection.expects(:execute)
+                .with(Clever::ME_ENDPOINT, :get)
+                .returns(user_response)
+        end
+
+        it 'fetches the user ID from the /me endpoint' do
+          expect(client.user_uid_for_code(code)).to eq(teacher_1['data']['id'])
+        end
+      end
+    end
+  end
+
   describe 'district data requests' do
     before do
       client.connection.expects(:execute).with(Clever::TOKENS_ENDPOINT).returns(tokens_response)

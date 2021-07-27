@@ -24,6 +24,8 @@ require 'clever/types/token'
 
 module Clever
   API_URL                  = 'https://api.clever.com/v3.0'
+  ME_ENDPOINT              = '/v3.0/me'
+  USER_TOKEN_ENDPOINT      = 'https://clever.com/oauth/tokens'
   TOKENS_ENDPOINT          = 'https://clever.com/oauth/tokens?owner_type=district'
   STUDENTS_ENDPOINT        = '/v3.0/users?role=student'
   COURSES_ENDPOINT         = '/v3.0/courses'

@@ -2,7 +2,7 @@
 
 module Clever
   class Client
-    attr_accessor :app_id, :app_token, :sync_id, :logger,
+    attr_accessor :app_id, :app_token, :sync_id, :logger, :redirect_uri,
                   :vendor_key, :vendor_secret, :username_source, :staff_username_source
 
     attr_reader :api_url, :tokens_endpoint
@@ -36,6 +36,22 @@ module Clever
       response = connection.execute(@tokens_endpoint)
       map_response!(response, Types::Token)
       response
+    end
+
+    def user_uid_for_code(code)
+      response = connection.execute(USER_TOKEN_ENDPOINT,
+                                    :post,
+                                    nil,
+                                    { code: code,
+                                      grant_type: 'authorization_code',
+                                      redirect_uri: redirect_uri })
+
+      fail ConnectionError, response.raw_body unless response.success?
+
+      connection.set_token(response.raw_body['access_token'])
+
+      response = connection.execute(ME_ENDPOINT, :get)
+      response&.body&.dig('id')
     end
 
     def most_recent_event

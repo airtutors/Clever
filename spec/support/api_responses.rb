@@ -32,6 +32,16 @@ RSpec.shared_context 'api responses' do
     }
   end
   let(:tokens_response) { Clever::Response.new(stub(body: tokens_body, status: status)) }
+  let(:user_token_body) do
+    {
+      'id' => '58939ac0a206f40316fe8a1c',
+      'created' => '2017-02-02T20:46:56.435Z',
+      'owner' => { 'type' => 'district', 'id' => app_id },
+      'access_token' => app_token,
+      'scopes' => ['read:district_admins']
+    }
+  end
+  let(:user_token_response) { Clever::Response.new(stub(body: user_token_body, status: status)) }
 
   #################################### STUDENTS RESPONSE ####################################
   # username is sis_id
@@ -169,6 +179,7 @@ RSpec.shared_context 'api responses' do
   let(:teachers_body) { { 'data' => [teacher_1, teacher_2] } }
   let(:school_admins_body) { { 'data' => [school_admin_1, school_admin_2] } }
   let(:district_admins_body) { { 'data' => [district_admin_1, district_admin_2] } }
+  let(:user_response) { Clever::Response.new(stub(body: teacher_1, status: status)) }
   let(:teachers_response) { Clever::Response.new(stub(body: teachers_body, status: status)) }
   let(:school_admins_response) { Clever::Response.new(stub(body: school_admins_body, status: status)) }
   let(:district_admins_response) { Clever::Response.new(stub(body: district_admins_body, status: status)) }
