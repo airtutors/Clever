@@ -177,7 +177,7 @@ RSpec.describe Clever::Client do
           expect(first_student.uid).to eq(student_1['data']['id'])
           expect(first_student.first_name).to eq(student_1['data']['name']['first'])
           expect(first_student.last_name).to eq(student_1['data']['name']['last'])
-          expect(first_student.username).to eq(student_1['data']['sis_id'])
+          expect(first_student.username).to eq(student_1['data']['roles']['student']['sis_id'])
           expect(first_student.provider).to eq('clever')
 
           expect(second_student.class).to eq(Clever::Types::Student)
@@ -208,7 +208,7 @@ RSpec.describe Clever::Client do
           expect(student.uid).to eq(student_1['data']['id'])
           expect(student.first_name).to eq(student_1['data']['name']['first'])
           expect(student.last_name).to eq(student_1['data']['name']['last'])
-          expect(student.username).to eq(student_1['data']['sis_id'])
+          expect(student.username).to eq(student_1['data']['roles']['student']['sis_id'])
           expect(student.provider).to eq('clever')
         end
       end
@@ -225,7 +225,7 @@ RSpec.describe Clever::Client do
             second_student = response[1]
             third_student  = response[2]
 
-            expect(first_student.username).to eq(student_1['data']['sis_id'])
+            expect(first_student.username).to eq(student_1['data']['roles']['student']['sis_id'])
             expect(second_student.username).to eq(student_2['data']['email'])
             expect(third_student.username).to eq(student_3['data']['credentials']['district_username'])
           end
@@ -242,7 +242,7 @@ RSpec.describe Clever::Client do
             second_student = response[1]
             third_student  = response[2]
 
-            expect(first_student.username).to eq(student_1['data']['sis_id'])
+            expect(first_student.username).to eq(student_1['data']['roles']['student']['sis_id'])
             expect(second_student.username).to eq(student_2['data']['email'])
             expect(third_student.username).to eq(student_3['data']['email'])
           end
@@ -259,8 +259,8 @@ RSpec.describe Clever::Client do
             second_student = response[1]
             third_student  = response[2]
 
-            expect(first_student.username).to eq(student_1['data']['sis_id'])
-            expect(second_student.username).to eq(student_2['data']['sis_id'])
+            expect(first_student.username).to eq(student_1['data']['roles']['student']['sis_id'])
+            expect(second_student.username).to eq(student_2['data']['roles']['student']['sis_id'])
             expect(third_student.username).to eq(student_3['data']['credentials']['district_username'])
           end
         end
@@ -369,8 +369,8 @@ RSpec.describe Clever::Client do
             first_admin  = response[0]
             second_admin = response[1]
 
-            expect(first_admin.username).to eq(district_admin_1['data']['sis_id'])
-            expect(second_admin.username).to eq(district_admin_2['data']['sis_id'])
+            expect(first_admin.username).to eq(district_admin_1['data']['roles']['district_admin']['sis_id'])
+            expect(second_admin.username).to eq(nil)
           end
         end
       end
@@ -474,8 +474,8 @@ RSpec.describe Clever::Client do
             first_teacher  = response[0]
             second_teacher = response[1]
 
-            expect(first_teacher.username).to eq(teacher_1['data']['sis_id'])
-            expect(second_teacher.username).to eq(teacher_2['data']['sis_id'])
+            expect(first_teacher.username).to eq(teacher_1['data']['roles']['teacher']['sis_id'])
+            expect(second_teacher.username).to eq(nil)
           end
         end
       end
@@ -775,7 +775,7 @@ RSpec.describe Clever::Client do
           uid: student_1['data']['id'],
           first_name: student_1['data']['name']['first'],
           last_name: student_1['data']['name']['last'],
-          username: student_1['data']['sis_id'],
+          username: student_1['data']['roles']['student']['sis_id'],
           provider: 'clever'
         )
       end

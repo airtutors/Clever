@@ -52,7 +52,7 @@ RSpec.shared_context 'api responses' do
         'name' => { 'first' => 'jane', 'last' => 'doe' },
         'credentials' => { 'district_username' => '' },
         'grade' => '1',
-        'sis_id' => '121314',
+        'roles' => { 'student' => { 'sis_id' => '121314' } },
         'email' => ''
       }
     }
@@ -65,7 +65,7 @@ RSpec.shared_context 'api responses' do
         'name' => { 'first' => 'johnny', 'last' => 'appleseed' },
         'credentials' => { 'district_username' => '' },
         'grade' => '6',
-        'sis_id' => '213154',
+        'roles' => { 'student' => { 'sis_id' => '213154' } },
         'email' => 'jseed@school.com'
       }
     }
@@ -78,7 +78,7 @@ RSpec.shared_context 'api responses' do
         'name' => { 'first' => 'thomas', 'last' => 'tank' },
         'credentials' => { 'district_username' => 'tomtank' },
         'grade' => '5',
-        'sis_id' => '',
+        'roles' => { 'student' => { 'sis_id' => '' } },
         'email' => 'choochoo@school.com'
       }
     }
@@ -162,7 +162,7 @@ RSpec.shared_context 'api responses' do
         'id' => '11',
         'email' => '12345',
         'name' => { 'first' => 'melvin', 'last' => 'epstein' },
-        'roles' => { 'district_admin' => { 'credentials' => { 'district_username' => 'epstein.melvin' } } }
+        'roles' => { 'district_admin' => { 'credentials' => { 'district_username' => 'epstein.melvin', 'sis_id' => '4123' } } }
       }
     }
   end
