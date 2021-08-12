@@ -8,7 +8,6 @@ module Clever
                   :first_name,
                   :last_name,
                   :provider,
-                  :legacy_id,
                   :role
 
       def initialize(attributes = {}, *, client: nil)
@@ -16,7 +15,6 @@ module Clever
         @email             = attributes['email']
         @first_name        = attributes['name']['first']
         @last_name         = attributes['name']['last']
-        @legacy_id         = attributes.dig('roles', 'teacher', 'legacy_id')
         @provider          = 'clever'
         @sis_id            = attributes.dig('roles', 'teacher', 'sis_id')
         @uid               = attributes['id']
@@ -37,8 +35,7 @@ module Clever
           first_name: @first_name,
           last_name: @last_name,
           username: @username,
-          provider: @provider,
-          legacy_id: @legacy_id
+          provider: @provider
         }
       end
 

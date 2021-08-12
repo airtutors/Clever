@@ -6,15 +6,13 @@ module Clever
       attr_reader :uid,
                   :first_name,
                   :last_name,
-                  :provider,
-                  :legacy_id
+                  :provider
 
       def initialize(attributes = {}, client: nil)
         @district_username = attributes.dig('credentials', 'district_username')
         @email             = attributes['email']
         @first_name        = attributes['name']['first']
         @last_name         = attributes['name']['last']
-        @legacy_id         = attributes.dig('roles', 'student', 'legacy_id')
         @provider          = 'clever'
         @sis_id            = attributes.dig('roles', 'student', 'sis_id')
         @uid               = attributes['id']
