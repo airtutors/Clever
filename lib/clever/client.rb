@@ -70,11 +70,12 @@ module Clever
       Paginator.fetch(connection, endpoint, :get, Types::Event, client: self).force
     end
 
-    %i(students courses teachers sections terms).each do |record_type|
+    %i(students courses teachers sections terms contacts schools).each do |record_type|
       define_method(record_type) do |record_uids = []|
         authenticate
 
         endpoint = Clever.const_get("#{record_type.upcase}_ENDPOINT")
+        p endpoint
         type = Types.const_get(record_type.to_s.capitalize[0..-2])
 
         records = Paginator.fetch(connection, endpoint, :get, type, client: self).force
