@@ -75,7 +75,6 @@ module Clever
         authenticate
 
         endpoint = Clever.const_get("#{record_type.upcase}_ENDPOINT")
-        p endpoint
         type = Types.const_get(record_type.to_s.capitalize[0..-2])
 
         records = Paginator.fetch(connection, endpoint, :get, type, client: self).force
