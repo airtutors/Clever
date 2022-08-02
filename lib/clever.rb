@@ -3,6 +3,8 @@
 require 'faraday'
 require 'faraday_middleware'
 
+require 'support/attribute_accessors'
+
 require 'clever/client'
 require 'clever/connection'
 require 'clever/paginator'
