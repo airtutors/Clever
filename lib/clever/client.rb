@@ -2,14 +2,16 @@
 
 module Clever
   class Client
+    cattr_accessor :vendor_key, :vendor_secret
     attr_accessor :app_id, :app_token, :sync_id, :logger, :redirect_uri,
-                  :vendor_key, :vendor_secret, :username_source, :staff_username_source
+                  :username_source, :staff_username_source
 
     attr_reader :api_url, :tokens_endpoint
 
-    def initialize
+    def initialize(app_id = nil)
       @api_url         = API_URL
       @tokens_endpoint = TOKENS_ENDPOINT
+      @app_id = app_id
     end
 
     def self.configure
@@ -109,7 +111,7 @@ module Clever
 
       fetched_courses = courses
 
-      terms_hash = terms.each_with_object({}) { |term, terms| terms[term.uid] = term  }
+      terms_hash = terms.each_with_object({}) { |term, terms| terms[term.uid] = term }
 
       sections.map do |section|
         course = fetched_courses.find { |clever_course| clever_course.uid == section.course }

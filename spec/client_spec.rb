@@ -12,6 +12,20 @@ RSpec.describe Clever::Client do
     expect(client.vendor_secret).to eq(vendor_secret)
   end
 
+  it 'persists vendor configuration globally' do
+    client
+    second_client = Clever::Client.new
+    expect(second_client.app_id).to_not eq(app_id)
+    expect(second_client.vendor_key).to eq(vendor_key)
+    expect(second_client.vendor_secret).to eq(vendor_secret)
+  end
+
+  it 'allows providing app_id to the initialization method' do
+    expect(client.app_id).to eq(app_id)
+    custom_client = Clever::Client.new("custom-app-id")
+    expect(custom_client.app_id).to eq("custom-app-id")
+  end
+
   it 'has proper defaults' do
     client = Clever::Client.new
     expect(client.api_url).to eq(Clever::API_URL)
