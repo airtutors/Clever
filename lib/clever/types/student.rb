@@ -4,6 +4,7 @@ module Clever
   module Types
     class Student < Base
       attr_reader :uid,
+                  :email,
                   :first_name,
                   :last_name,
                   :provider
