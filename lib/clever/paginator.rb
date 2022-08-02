@@ -31,8 +31,8 @@ module Clever
       end.lazy
     end
 
-    def self.fetch(*params)
-      new(*params).fetch
+    def self.fetch(*args, **kwargs)
+      new(*args, **kwargs).fetch
     end
 
     private
