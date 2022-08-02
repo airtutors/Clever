@@ -4,7 +4,7 @@ module Clever
   module Types
     class Contact < Base
       attr_reader :uid, :sis_id, :name, :students, :school, :district,
-        :phone_type, :phone, :email, :type, :relationship
+                  :phone_type, :phone, :email, :type, :relationship
 
       def initialize(attributes = {}, *)
         @uid = attributes['id']
