@@ -38,6 +38,8 @@ This gem support requesting:
   - Sections
   - Classrooms
   - Enrollments
+  - Contacts
+  - Schools
 
 #### Students
 - Request all students:
