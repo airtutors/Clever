@@ -4,8 +4,9 @@ module Clever
   module Types
     class Section < Base
       attr_reader :uid, :name, :period, :course, :grades, :subjects, :students,
-        :teachers, :term_id, :provider, :primary_teacher_uid, :district, :school,
-        :section_number, :sis_id, :grade, :subject
+                  :teachers, :term_id, :provider, :primary_teacher_uid, :district, :school,
+                  :section_number, :sis_id, :grade, :subject
+
       def initialize(attributes = {}, *)
         @uid = attributes['id']
         @name = attributes['name']
