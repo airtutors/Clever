@@ -3,7 +3,8 @@
 module Clever
   module Types
     class Teacher < Base
-      attr_reader :uid, :email, :first_name, :last_name, :provider, :role, :school, :schools
+      attr_reader :district_username, :uid, :email, :first_name, :last_name, :provider, :role,
+                  :school, :schools
 
       def initialize(attributes = {}, *, client: nil)
         @district_username = attributes.dig('roles', 'teacher', 'credentials', 'district_username')
